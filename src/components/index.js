@@ -15,6 +15,7 @@ import Footer from "./Footer"
 import CartView from "./CartView"
 import CartNoti from "./CartNoti"
 import AddCartBox from "./AddCartBox"
+import AddressBox from "./AddressBox"
 
 export {
     AppLogo,
@@ -33,5 +34,6 @@ export {
     Footer,
     CartView,
     CartNoti,
-    AddCartBox
+    AddCartBox,
+    AddressBox
 }

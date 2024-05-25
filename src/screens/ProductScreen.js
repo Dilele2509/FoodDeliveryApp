@@ -12,12 +12,12 @@ function ProductScreen({ route, navigation }) {
     const { id } = route.params;
     const [productInfo, setProductInfo] = useState(null);
     const [cartCount, setCartCount] = useState(0);
-    const [isOpen, setIsOpen] = useState(false)
+    const [isOpen, setIsOpen] = useState(false);
+    const [quantity, setQuantity] = useState(1);
 
     const fetchData = useCallback(() => {
         axios.post('/product/id', { product_id: id })
             .then((response) => {
-                //console.log('API response:', response.data);
                 if (Array.isArray(response.data) && response.data.length > 0) {
                     setProductInfo(response.data[0]);
                 } else {
@@ -30,42 +30,62 @@ function ProductScreen({ route, navigation }) {
 
         axios.get('/cart')
             .then((response) => {
-                //console.log(response.data.length, response.data);
-                setCartCount(response.data.length)
+                setCartCount(response.data.length);
             })
             .catch((error) => {
-                console.log('Error fetching recent data: ', error);
-            })
-    }, []);
+                console.error('Error fetching cart data:', error);
+            });
+    }, [id]);
 
     useFocusEffect(
         useCallback(() => {
             fetchData();
-        }, [fetchData, id])
+        }, [fetchData])
     );
+
+    const handleAddToCart = () => {
+        axios.post('/cart/add', { product_id: productInfo.product_id, quantity: quantity })
+            .then(() => {
+                fetchData(); // Fetch updated cart data to update cartCount
+                setIsOpen(false);
+            })
+            .catch(error => {
+                console.error('Error adding item to cart:', error);
+            });
+    };
+
+    const incrementQuantity = () => {
+        setQuantity(quantity + 1);
+    };
+
+    const decrementQuantity = () => {
+        if (quantity > 1) {
+            setQuantity(quantity - 1);
+        }
+    };
 
     if (!productInfo) {
         return <Text>Loading...</Text>;
     }
 
     return (
-        <View style={[{ flex: 10, height: "auto", backgroundColor: primaryColor.creamPrimary }]}>
-            <View style={[{ flex: 3 }]}>
-                <Image style={[styles.prodImg]} source={{ uri: productInfo.thumbnail }} />
-                <TouchableOpacity onPress={() => { navigation.navigate("Home") }} style={styles.backBtn}>
+        <View style={{ flex: 10, height: "auto", backgroundColor: primaryColor.creamPrimary }}>
+            <View style={{ flex: 3 }}>
+                <Image style={styles.prodImg} source={{ uri: productInfo.thumbnail }} />
+                <TouchableOpacity onPress={() => navigation.navigate("Home")} style={styles.backBtn}>
                     <AntDesign name="arrowleft" size={28} color="#fff" />
                 </TouchableOpacity>
             </View>
             <View style={[GlobalStyles.padScreen20, { flex: 1.5 }]}>
-                <Text style={[GlobalStyles.h2]}>{productInfo.title}</Text>
+                <Text style={GlobalStyles.h2}>{productInfo.title}</Text>
                 <Text style={[GlobalStyles.basicText, styles.description]}>Quantity Sold: {productInfo.sold}</Text>
-                <Text style={[GlobalStyles.basicText]}>Rating: {productInfo.rating}</Text>
-                <View style={[styles.desContainer]}>
+                <Text style={GlobalStyles.basicText}>Rating: {productInfo.rating}</Text>
+                <View style={styles.desContainer}>
                     <View>
-                        <Text style={[styles.price]}>{productInfo.price} VND</Text>
+                        <Text style={styles.price}>{productInfo.price} VND</Text>
                     </View>
-                    <View style={[styles.addBtn]}>
-                        <TouchableOpacity onPress={()=>setIsOpen(true)}>
+                    <View style={styles.addBtn}>
+                        <TouchableOpacity onPress={() => setIsOpen(true)}>
                             <AntDesign name="plussquare" size={28} color={primaryColor.organPrimary} />
                         </TouchableOpacity>
                     </View>
@@ -81,7 +101,7 @@ function ProductScreen({ route, navigation }) {
                         <View key={item.id} style={styles.recentItem}>
                             <Image style={styles.recentImg} source={{ uri: item.itemURI }} />
                             <View style={[GlobalStyles.pad10, styles.recentContent]}>
-                                <Text style={[GlobalStyles.h5]}>{item.name}</Text>
+                                <Text style={GlobalStyles.h5}>{item.name}</Text>
                                 <Text style={styles.discountText}>{item.discount}</Text>
                             </View>
                         </View>
@@ -89,8 +109,17 @@ function ProductScreen({ route, navigation }) {
                 />
             </View>
             <SafeAreaView>
-                {isOpen && <AddCartBox setIsOpen={setIsOpen} item={productInfo}/>}
-                {cartCount > 0 && <CartView cartCount={cartCount} navigation={navigation} style={[styles.cartView]} />}
+                {isOpen && (
+                    <AddCartBox 
+                        handleAddToCart={handleAddToCart}
+                        quantity={quantity}
+                        incrementQuantity={incrementQuantity}
+                        decrementQuantity={decrementQuantity}
+                        setIsOpen={setIsOpen}
+                        item={productInfo}
+                    />
+                )}
+                {cartCount > 0 && <CartView cartCount={cartCount} navigation={navigation} style={styles.cartView} />}
             </SafeAreaView>
         </View>
     );
@@ -150,6 +179,11 @@ const styles = StyleSheet.create({
     discountText: {
         color: 'red',
     },
+    cartView: {
+        position: 'absolute',
+        bottom: 10,
+        right: 10,
+    }
 });
 
 export default ProductScreen;

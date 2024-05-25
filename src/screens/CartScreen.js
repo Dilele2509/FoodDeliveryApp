@@ -41,11 +41,11 @@ const CartScreen = ({ navigation }) => {
         }, [fetchData])
     );
 
-    //change quantity
+    // Change quantity
     const incrementQuantity = (item) => {
         const newCartProduct = cartProduct.map(product => {
             if (product.product_id === item.product_id) {
-                axios.post('/cart/add', {product_id: item.product_id, quantity: 1})
+                axios.post('/cart/add', { product_id: item.product_id, quantity: 1 });
                 return { ...product, cartQuantity: product.cartQuantity + 1 };
             }
             return product;
@@ -55,16 +55,24 @@ const CartScreen = ({ navigation }) => {
 
     const decrementQuantity = (item) => {
         const newCartProduct = cartProduct.map(product => {
-            if (product.product_id === item.product_id && product.cartQuantity > 1) {
-                axios.post('/cart/add', {product_id: item.product_id, quantity: -1})
-                return { ...product, cartQuantity: product.cartQuantity - 1 };
+            if (product.product_id === item.product_id) {
+                const newQuantity = product.cartQuantity - 1;
+                axios.post('/cart/add', { product_id: item.product_id, quantity: -1 })
+                    .then(() => {
+                        if (newQuantity <= 0) {
+                            // Remove item from the cart on the server and refetch the cart data
+                            fetchData();
+                        }
+                    })
+                    .catch(error => console.error('Error updating product quantity:', error));
+                return { ...product, cartQuantity: newQuantity };
             }
             return product;
-        });
+        }).filter(product => product.cartQuantity > 0); // Filter out products with quantity zero
         setCartProduct(newCartProduct);
     };
 
-    //calculate total price
+    // Calculate total price
     const calculateTotalPrice = () => {
         return cartProduct.reduce((total, product) => {
             return total + (product.price * product.cartQuantity);
@@ -104,7 +112,7 @@ const CartScreen = ({ navigation }) => {
                 </TouchableOpacity>
                 <Text style={styles.titleText}>Cart</Text>
             </View>
-            <FlatList 
+            <FlatList
                 style={styles.container}
                 data={cartProduct}
                 renderItem={renderItem}

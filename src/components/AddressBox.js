@@ -4,22 +4,39 @@ import GlobalStyles, { primaryColor } from '../../assets/styles/GlobalStyles'
 import { AntDesign } from '@expo/vector-icons';
 import FillButton from './FillButton';
 import axios from '../API/axios';
+import InputBox from './inputBox';
 
 const { width } = Dimensions.get('window');
 
-const AddCartBox = (props) => {
-    const { setIsOpen, item , handleAddToCart, incrementQuantity, decrementQuantity, quantity} = props;
+const AddressBox = (props) => {
+    const { setIsOpen, item, setItem} = props;
+    const [name, setName] = useState('');
+    const [phone, setPhone] = useState('');
+    const [address, setAddress] = useState('');
+
+    const handleAddDeli = ()=>{
+        if(name == '' || phone == '' || address == ''){
+            setItem(item)
+        }else{
+            setItem({
+                receiver: name,
+                phone: phone,
+                address: address
+            })
+        }
+        setIsOpen(false)
+    }
 
     return (
         <View style={styles.container}>
             <View style={[GlobalStyles.padScreen20, styles.headerPage]}>
-                <Text style={styles.titleText}>Add To Cart</Text>
+                <Text style={styles.titleText}>Delivery Information</Text>
                 <TouchableOpacity onPress={()=>setIsOpen(false)} style={styles.closeBtn}>
                     <AntDesign name="close" size={24} color={primaryColor.whitePrimary} />
                 </TouchableOpacity>
             </View>
             <View style={{padding: 20}}>
-                <View key={item.product_id} style={styles.contentItem}>
+                {/* <View key={item.product_id} style={styles.contentItem}>
                     <Image style={styles.itemImg} source={{ uri: item.thumbnail }} />
                     <View style={styles.itemInfo}>
                         <View style={styles.priceInfo}>
@@ -40,16 +57,19 @@ const AddCartBox = (props) => {
                             </TouchableOpacity>
                         </View>
                     </View>
-                </View>
+                </View> */}
+                <InputBox value={name} onChangeText={setName} placeholder="Enter receiver's name"/>
+                <InputBox value={phone} onChangeText={setPhone} placeholder="Enter receive phone"/>
+                <InputBox value={address} onChangeText={setAddress} placeholder="Enter receiver address"/>
             </View>
             <View style={{alignItems: "center"}}>
-                <FillButton onPress={handleAddToCart} text="Add" color={primaryColor.whitePrimary} backgroundColor={primaryColor.organPrimary}/>
+                <FillButton onPress={handleAddDeli} text="Add" color={primaryColor.whitePrimary} backgroundColor={primaryColor.organPrimary}/>
             </View>
         </View>
     );
 };
 
-export default AddCartBox
+export default AddressBox
 
 const styles = StyleSheet.create({
     headerPage: {
@@ -74,8 +94,8 @@ const styles = StyleSheet.create({
     },
     container: {
         width: "100%",
-        height: 400,
-        backgroundColor: 'rgba(0, 0, 0, .8)',
+        height: 600,
+        backgroundColor: 'rgba(0, 0, 0, .9)',
         position: "absolute",
         bottom: 0,
         shadowColor: "#000",
