@@ -1,10 +1,9 @@
 import { StyleSheet, TouchableOpacity, FlatList, Image, View, Text} from "react-native";
 import React from "react";
 import GlobalStyles, {primaryColor} from "../../assets/styles/GlobalStyles";
-import { AntDesign } from '@expo/vector-icons';
 
 function MenuBar(props) {
-    const { onPress, listTitle, itemList } = props;
+    const {listTitle, itemList, navigation } = props;
 
     return (
         <View style={[GlobalStyles.padScreen20, GlobalStyles.mt10, { backgroundColor: primaryColor.whitePrimary }]}>
@@ -18,13 +17,14 @@ function MenuBar(props) {
                 style={[GlobalStyles.mt15]}
                 renderItem={({ item }) => (
                     <TouchableOpacity 
-                        key={item.id} 
-                        onPress={onPress}
+                        key={item.product_id} 
+                        onPress={()=>navigation.navigate("Product", {id: String(item.product_id)})}
                         style={[styles.RecommendItem]}>
-                        <Image style={[styles.RecommendImg]} source={{ uri: item.itemURI }} />
+                        {/* {console.log("ProdID: ", String(item.product_id))} */}
+                        <Image style={[styles.RecommendImg]} source={{ uri: item.thumbnail }} />
                         <View style={[GlobalStyles.pad10, styles.RecommendContent]}>
-                            <Text style={[GlobalStyles.h5]}>{item.name}</Text>
-                            <Text style={[styles.discountText]}>{item.discount}</Text>
+                            <Text style={[GlobalStyles.h5]}>{item.title}</Text>
+                            <Text style={[styles.discountText]}>Quantity: {item.quantity}</Text>
                         </View>
                     </TouchableOpacity>
                 )}

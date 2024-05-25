@@ -10,6 +10,11 @@ import SliderShow from "./SliderShow"
 import Categories from "./Categories"
 import Recommend from "./Recommend"
 import TopRatedRes from "./TopRatedRes"
+import MenuBar from "./menuBar"
+import Footer from "./Footer"
+import CartView from "./CartView"
+import CartNoti from "./CartNoti"
+import AddCartBox from "./AddCartBox"
 
 export {
     AppLogo,
@@ -23,5 +28,10 @@ export {
     SliderShow,
     Categories,
     Recommend,
-    TopRatedRes
+    TopRatedRes,
+    MenuBar,
+    Footer,
+    CartView,
+    CartNoti,
+    AddCartBox
 }

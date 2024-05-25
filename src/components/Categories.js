@@ -1,10 +1,12 @@
 import React, { useRef, useState } from "react";
-import { StyleSheet, View, Text, TouchableOpacity, ScrollView, Dimensions, Animated } from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity, ScrollView, Animated } from "react-native";
 import GlobalStyles, { primaryColor } from "../../assets/styles/GlobalStyles";
-import { Ionicons, MaterialCommunityIcons, Entypo, FontAwesome6 } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons, Entypo } from '@expo/vector-icons';
+import axios from "../API/axios";
 
 
-function Categories() {
+function Categories(props) {
+    const { navigation, productAllList } = props;
     const scrollViewRef = useRef(null);
     const [scrollX] = useState(new Animated.Value(0));
     const [contentWidth, setContentWidth] = useState(1);
@@ -26,6 +28,20 @@ function Categories() {
         extrapolate: 'clamp',
     });
 
+    const setListProduct = (catID, titlePage) => {
+        axios.post('/product/cat', { category_id: catID })
+            .then((response) => {
+                if (Array.isArray(response.data)) {
+                    navigation.navigate("ViewAll", { titlePage: titlePage, prevPage: 'Home', allList: response.data })
+                } else {
+                    console.error('API response does not contain an array:', response.data);
+                }
+            })
+            .catch((error) => {
+                console.error('Error fetching product data:', error);
+            });
+    }
+
     return (
         <View style={styles.wrapper}>
             <ScrollView
@@ -41,25 +57,49 @@ function Categories() {
                 scrollEventThrottle={16}
             >
                 <View style={[GlobalStyles.flexRow, styles.container]}>
-                    <TouchableOpacity style={[GlobalStyles.ml20, styles.catItem]}>
-                        <Ionicons style={{ marginBottom: 7 }} name="fast-food" size={32} color="#FB6D48" />
-                        <Text style={[{ color: "#DD5746" }]}>Fast food</Text>
+                    <TouchableOpacity
+                        onPress={() => {
+                            setListProduct(1, "Main Dish");
+                        }}
+                        style={[GlobalStyles.ml20, styles.catItem]}>
+                        <MaterialCommunityIcons style={{ marginBottom: 7 }} name="food-turkey" size={32} color="#FB6D48" />
+                        <Text style={[{ color: "#DD5746" }]}>Main Dish</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={[GlobalStyles.ml20, styles.catItem]}>
-                        <MaterialCommunityIcons style={{ marginBottom: 7 }} name="noodles" size={32} color="#FFAF45" />
-                        <Text style={[{ color: "#FFAF45" }]}>Noodles</Text>
+
+                    <TouchableOpacity
+                        onPress={() => {
+                            setListProduct(2, "Side Dish");
+                        }}
+                        style={[GlobalStyles.ml20, styles.catItem]}>
+                        <Ionicons style={{ marginBottom: 7 }} name="fast-food" size={32} color="#FFAF45" />
+                        <Text style={[{ color: "#FFAF45" }]}>Side Dish</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={[GlobalStyles.ml20, styles.catItem]}>
+
+                    <TouchableOpacity
+                        onPress={() => {
+                            setListProduct(3, "Snack");
+                        }}
+                        style={[GlobalStyles.ml20, styles.catItem]}>
+                        <MaterialCommunityIcons style={{ marginBottom: 7 }} name="food-hot-dog" size={32} color="#ED9455" />
+                        <Text style={[{ color: "#ED9455" }]}>Rice</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        onPress={() => {
+                            setListProduct(4, "Drink");
+                        }}
+                        style={[GlobalStyles.ml20, styles.catItem]}>
                         <Entypo style={{ marginBottom: 7 }} name="drink" size={32} color="#40679E" />
                         <Text style={[{ color: "#40679E" }]}>Drink</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={[GlobalStyles.ml20, styles.catItem]}>
-                        <FontAwesome6 style={{ marginBottom: 7 }} name="bowl-rice" size={32} color="#ED9455" />
-                        <Text style={[{ color: "#ED9455" }]}>Rice</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={[GlobalStyles.ml20, styles.catItem]}>
-                        <FontAwesome6 style={{ marginBottom: 7 }} name="glass-water" size={32} color="#AF8260" />
-                        <Text style={[{ color: "#AF8260" }]}>Milk Tea</Text>
+
+                    <TouchableOpacity
+                        onPress={() => {
+                            navigation.navigate("ViewAll", { titlePage: 'Menu', prevPage: 'Home', allList: productAllList })
+                        }}
+                        style={[GlobalStyles.ml20, styles.catItem]}>
+                        <MaterialCommunityIcons style={{ marginBottom: 7 }} name="food-fork-drink" size={32} color="#ED9455" />
+                        <Text style={[{ color: "#ED9455" }]}>All Menu</Text>
                     </TouchableOpacity>
                 </View>
             </ScrollView>

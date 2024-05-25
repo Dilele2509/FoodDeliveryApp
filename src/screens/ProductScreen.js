@@ -1,51 +1,97 @@
-import React from "react";
-import { StyleSheet, Text, View, Image, Dimensions, TouchableOpacity, FlatList } from "react-native";
+import React, { useCallback, useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+import { StyleSheet, Text, View, Image, Dimensions, TouchableOpacity, FlatList, SafeAreaView } from "react-native";
 import GlobalStyles, { primaryColor } from "../../assets/styles/GlobalStyles";
 import { AntDesign } from '@expo/vector-icons';
+import axios from "../API/axios";
+import { AddCartBox, CartView } from "../components";
 
 const { width } = Dimensions.get('window');
 
-function ProductScreen(props) {
-    const {allList, navigation} = props
+function ProductScreen({ route, navigation }) {
+    const { id } = route.params;
+    const [productInfo, setProductInfo] = useState(null);
+    const [cartCount, setCartCount] = useState(0);
+    const [isOpen, setIsOpen] = useState(false)
+
+    const fetchData = useCallback(() => {
+        axios.post('/product/id', { product_id: id })
+            .then((response) => {
+                //console.log('API response:', response.data);
+                if (Array.isArray(response.data) && response.data.length > 0) {
+                    setProductInfo(response.data[0]);
+                } else {
+                    console.error('API response does not contain an array or is empty:', response.data);
+                }
+            })
+            .catch((error) => {
+                console.error('Error fetching product data:', error);
+            });
+
+        axios.get('/cart')
+            .then((response) => {
+                //console.log(response.data.length, response.data);
+                setCartCount(response.data.length)
+            })
+            .catch((error) => {
+                console.log('Error fetching recent data: ', error);
+            })
+    }, []);
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchData();
+        }, [fetchData, id])
+    );
+
+    if (!productInfo) {
+        return <Text>Loading...</Text>;
+    }
+
     return (
-        <View style={[{ flex: 10, height: "auto" }]}>
+        <View style={[{ flex: 10, height: "auto", backgroundColor: primaryColor.creamPrimary }]}>
             <View style={[{ flex: 3 }]}>
-                <Image style={[styles.prodImg]} source={require("../../assets/images/bunbo.jpeg")} />
+                <Image style={[styles.prodImg]} source={{ uri: productInfo.thumbnail }} />
                 <TouchableOpacity onPress={() => { navigation.navigate("Home") }} style={styles.backBtn}>
                     <AntDesign name="arrowleft" size={28} color="#fff" />
                 </TouchableOpacity>
             </View>
             <View style={[GlobalStyles.padScreen20, { flex: 1.5 }]}>
-                <Text style={[GlobalStyles.h2]}>Title</Text>
-                <Text style={[GlobalStyles.basicText, styles.description]}>Quantity Sold: </Text>
-                <Text style={[GlobalStyles.basicText]}>Rating: </Text>
+                <Text style={[GlobalStyles.h2]}>{productInfo.title}</Text>
+                <Text style={[GlobalStyles.basicText, styles.description]}>Quantity Sold: {productInfo.sold}</Text>
+                <Text style={[GlobalStyles.basicText]}>Rating: {productInfo.rating}</Text>
                 <View style={[styles.desContainer]}>
                     <View>
-                        <Text style={[styles.price]}>20.000 vnd</Text>
+                        <Text style={[styles.price]}>{productInfo.price} VND</Text>
                     </View>
                     <View style={[styles.addBtn]}>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={()=>setIsOpen(true)}>
                             <AntDesign name="plussquare" size={28} color={primaryColor.organPrimary} />
                         </TouchableOpacity>
                     </View>
                 </View>
             </View>
-            <View style={[{ flex: 3 }, GlobalStyles.padScreen20]}>
-                <View style={[styles.fbArea, {paddingBottom: 20}]}>
+            <View style={[{ flex: 2 }, GlobalStyles.padScreen20]}>
+                <View style={[styles.fbArea, { paddingBottom: 20 }]}>
                     <Text style={GlobalStyles.h3}>Feedbacks</Text>
                 </View>
-                <FlatList data={allList}
-                renderItem={({ item }) => (
-                    <View key={item.id} style={styles.recentItem}>
-                        <Image style={styles.recentImg} source={{ uri: item.itemURI }} />
-                        <View style={[GlobalStyles.pad10, styles.recentContent]}>
-                            <Text style={[GlobalStyles.h5]}>{item.name}</Text>
-                            <Text style={styles.discountText}>{item.discount}</Text>
+                <FlatList
+                    data={productInfo.feedbacks || []}
+                    renderItem={({ item }) => (
+                        <View key={item.id} style={styles.recentItem}>
+                            <Image style={styles.recentImg} source={{ uri: item.itemURI }} />
+                            <View style={[GlobalStyles.pad10, styles.recentContent]}>
+                                <Text style={[GlobalStyles.h5]}>{item.name}</Text>
+                                <Text style={styles.discountText}>{item.discount}</Text>
+                            </View>
                         </View>
-                    </View>
-                )}
-            />
+                    )}
+                />
             </View>
+            <SafeAreaView>
+                {isOpen && <AddCartBox setIsOpen={setIsOpen} item={productInfo}/>}
+                {cartCount > 0 && <CartView cartCount={cartCount} navigation={navigation} style={[styles.cartView]} />}
+            </SafeAreaView>
         </View>
     );
 }
@@ -86,7 +132,24 @@ const styles = StyleSheet.create({
         borderStyle: "solid",
         borderBottomWidth: 1,
         borderBottomColor: primaryColor.organPrimary
-    }
-})
+    },
+    recentItem: {
+        flexDirection: 'row',
+        marginBottom: 10,
+    },
+    recentImg: {
+        width: 60,
+        height: 60,
+        borderRadius: 30,
+    },
+    recentContent: {
+        flex: 1,
+        marginLeft: 10,
+        justifyContent: 'center',
+    },
+    discountText: {
+        color: 'red',
+    },
+});
 
 export default ProductScreen;

@@ -24,7 +24,7 @@ function TopRatedRes(props) {
                 renderItem={({ item }) => (
                     <TouchableOpacity 
                         key={item.id} 
-                        onPress={navigation}
+                        onPress={() => navigation.navigate("Product" , {id: item.id, title: item.name, img: item.itemURI})}
                         style={[styles.recentItem]}>
                         <Image style={[styles.recentImg]} source={{ uri: item.itemURI }} />
                         <View style={[GlobalStyles.pad10, styles.recentContent]}>

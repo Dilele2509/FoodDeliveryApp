@@ -8,7 +8,8 @@ export const primaryColor = {
     lightPrimary: "#90D26D",
     creamPrimary: "#FFFBEB",
     whitePrimary: "#fff",
-    blackPrimary: "#444"
+    blackPrimary: "#444",
+    brownPrimary: "#C06014"
 };
 
 // global style

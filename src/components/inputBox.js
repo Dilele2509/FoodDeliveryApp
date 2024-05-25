@@ -1,29 +1,32 @@
 import React, { useState } from "react";
-import GlobalStyles, { primaryColor } from "../../assets/styles/GlobalStyles";
 import { StyleSheet, Text, TextInput, View } from "react-native";
+import GlobalStyles, { primaryColor } from "../../assets/styles/GlobalStyles";
 
 function InputBox(props) {
-    const [isFocus, setIsFocus] = useState(false)
-    const {text, textColor, placeholder, secureTextEntry, type} = props
-    return ( 
-        <View style={[{marginTop: 15}]}>
-            {text?(<Text style={[GlobalStyles.h4, {color: textColor}]}>{text}</Text>):null}
+    const [isFocus, setIsFocus] = useState(false);
+    const { text, textColor, placeholder, secureTextEntry, value, onChangeText, type } = props;
+
+    return (
+        <View style={{ marginTop: 15 }}>
+            {text && (<Text style={[GlobalStyles.h4, { color: textColor }]}>{text}</Text>)}
             <TextInput
-                keyboardType={type? type : "default"}
-                secureTextEntry= {secureTextEntry}
+                keyboardType={type ? type : "default"}
+                secureTextEntry={secureTextEntry}
                 style={[styles.inputStyle, styles.mt15, GlobalStyles.alightSelfCenter, isFocus && styles.inputFocus]}
                 placeholder={placeholder}
                 placeholderTextColor={"#999"}
+                value={value}
+                onChangeText={onChangeText}
                 onFocus={() => setIsFocus(true)}
                 onBlur={() => setIsFocus(false)}
             />
         </View>
-     );
+    );
 }
 
 const styles = StyleSheet.create({
-    mt15:{
-        marginTop:15,
+    mt15: {
+        marginTop: 15,
     },
     inputStyle: {
         width: 350,
@@ -32,11 +35,11 @@ const styles = StyleSheet.create({
         backgroundColor: "transparent",
         borderStyle: "solid",
         borderRadius: 20,
-        borderWidth:1,
+        borderWidth: 1,
         paddingHorizontal: 15,
-        color: primaryColor.whitePrimary,
+        color: primaryColor.blackPrimary,
     },
-    inputFocus:{
+    inputFocus: {
         borderColor: primaryColor.darkPrimary,
         backgroundColor: primaryColor.whitePrimary,
         color: primaryColor.organPrimary,

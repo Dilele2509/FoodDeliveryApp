@@ -4,11 +4,12 @@ import { StyleSheet, Text, View } from "react-native";
 import { Feather } from '@expo/vector-icons';
 import SearchFilter from "./SearchFilter";
 
-function Header() {
+function Header(props) {
+    const {userName} = props
     return (  
         <View style={[GlobalStyles.mb10]}>
             <View style={[GlobalStyles.flexRow, GlobalStyles.padScreen20, styles.headerContainer]}>
-                <Text style={GlobalStyles.h3}>Hi, Vy Le</Text>
+                <Text style={GlobalStyles.h3}>Hi, {userName}</Text>
                 <Feather name="bell" size={24} color={primaryColor.organPrimary} />
             </View>
             <SearchFilter iconColor={primaryColor.organPrimary} placeholder={"Enter your favorite food"}/>

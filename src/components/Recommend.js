@@ -23,14 +23,15 @@ function Recommend(props) {
                 style={[GlobalStyles.mt15]}
                 renderItem={({ item }) => (
                     <TouchableOpacity 
-                        key={item.id} 
+                        key={item.product_id} 
                         style={[styles.RecommendItem]}
-                        onPress={navigation}>
-                        <Image style={[styles.RecommendImg]} source={{ uri: item.itemURI }} />
+                        onPress={()=>navigation.navigate("Product", {id: String(item.product_id)})}>
+                        <Image style={[styles.RecommendImg]} source={{ uri: item.thumbnail }} />
                         <View style={[GlobalStyles.pad10, styles.RecommendContent]}>
-                            <Text style={[GlobalStyles.h5]}>{item.name}</Text>
-                            <Text style={[styles.discountText]}>{item.discount}</Text>
+                            <Text style={[GlobalStyles.h5]}>{item.title}</Text>
+                            <Text style={[styles.discountText]}>{item.quantity}</Text>
                         </View>
+                        {/* {console.log(item)} */}
                     </TouchableOpacity>
                 )}
             />
@@ -55,7 +56,7 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         backgroundColor: "#F5F7F8",
         marginRight: 10,
-        maxWidth: 200
+        width: 130
     },
     discountText: {
         padding: 3,
