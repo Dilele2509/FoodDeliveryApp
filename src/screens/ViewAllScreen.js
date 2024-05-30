@@ -19,13 +19,16 @@ function ViewAllScreen({ navigation, route }) {
             <FlatList data={allList}
                 style={styles.itemContainer}
                 renderItem={({ item }) => (
-                    <View key={item.product_id} style={styles.recentItem}>
+                    <TouchableOpacity 
+                        onPress={()=>navigation.navigate("Product", {id: String(item.product_id)})}
+                        key={item.product_id} 
+                        style={styles.recentItem}>
                         <Image style={styles.recentImg} source={{ uri: item.thumbnail }} />
                         <View style={[GlobalStyles.pad10, styles.recentContent]}>
                             <Text style={[GlobalStyles.h5]}>{item.title}</Text>
                             <Text style={styles.discountText}>{item.quantity}</Text>
                         </View>
-                    </View>
+                    </TouchableOpacity>
                 )}
             />
         </SafeAreaView>

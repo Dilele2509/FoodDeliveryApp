@@ -5,7 +5,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { FooterProvider } from '../provider/FooterProvider';// Import the provider
 import WelcomeScreen from '../screens/WelcomeScreen';
 import Login from '../screens/Login';
-import SignUp from '../screens/SignUp';
+import SignUp from '../screens/SignUp/SignUp';
+import SignUpInfo from '../screens/SignUp/SignUpInfo';
 import ForgotPass from '../screens/ForgotPass';
 import OTPScreen from '../screens/OTPScreen';
 import HomeScreen from "../screens/HomeScreen";
@@ -17,6 +18,8 @@ import AccountScreen from "../screens/AccountScreen";
 import CartScreen from '../screens/CartScreen';
 import CheckoutScreen from '../screens/CheckoutScreen';
 import OrderSuccess from '../screens/OrderSuccess';
+import ResetPass from '../screens/ResetPass';
+import OrderDetail from '../screens/OrderDetail';
 
 const Stack = createNativeStackNavigator();
 
@@ -28,6 +31,7 @@ function AppNavigator() {
                     <Stack.Screen name="Welcome" component={WelcomeScreen} />
                     <Stack.Screen name="Login" component={Login} />
                     <Stack.Screen name="Signup" component={SignUp} />
+                    <Stack.Screen name="SignUpInfo" component={SignUpInfo} />
                     <Stack.Screen name="forgotPass" component={ForgotPass} />
                     <Stack.Screen name="OTPScreen" component={OTPScreen} />
                     <Stack.Screen name="Home" component={HomeScreen} />
@@ -39,6 +43,8 @@ function AppNavigator() {
                     <Stack.Screen name="Cart" component={CartScreen} />
                     <Stack.Screen name="Checkout" component={CheckoutScreen} />
                     <Stack.Screen name="OrderSuccess" component={OrderSuccess} />
+                    <Stack.Screen name="ResetPass" component={ResetPass} />
+                    <Stack.Screen name="OrderDetail" component={OrderDetail} />
                 </Stack.Navigator>
             </NavigationContainer>
         </FooterProvider>

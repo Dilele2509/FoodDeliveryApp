@@ -23,13 +23,13 @@ function TopRatedRes(props) {
                 showsHorizontalScrollIndicator={false}
                 renderItem={({ item }) => (
                     <TouchableOpacity 
-                        key={item.id} 
-                        onPress={() => navigation.navigate("Product" , {id: item.id, title: item.name, img: item.itemURI})}
+                        key={item.product_id} 
+                        onPress={() => navigation.navigate("Product" , {id: item.product_id, title: item.title, img: item.thumbnail})}
                         style={[styles.recentItem]}>
-                        <Image style={[styles.recentImg]} source={{ uri: item.itemURI }} />
+                        <Image style={[styles.recentImg]} source={{ uri: item.thumbnail }} />
                         <View style={[GlobalStyles.pad10, styles.recentContent]}>
-                            <Text style={[GlobalStyles.h5]}>{item.name}</Text>
-                            <Text style={[styles.discountText]}>{item.discount}</Text>
+                            <Text style={[GlobalStyles.h5]}>{item.title}</Text>
+                            <Text style={[styles.discountText]}>sold: {item.sold}</Text>
                         </View>
                     </TouchableOpacity>
                 )} />

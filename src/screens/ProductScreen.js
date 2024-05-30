@@ -72,14 +72,15 @@ function ProductScreen({ route, navigation }) {
         <View style={{ flex: 10, height: "auto", backgroundColor: primaryColor.creamPrimary }}>
             <View style={{ flex: 3 }}>
                 <Image style={styles.prodImg} source={{ uri: productInfo.thumbnail }} />
-                <TouchableOpacity onPress={() => navigation.navigate("Home")} style={styles.backBtn}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
                     <AntDesign name="arrowleft" size={28} color="#fff" />
                 </TouchableOpacity>
             </View>
             <View style={[GlobalStyles.padScreen20, { flex: 1.5 }]}>
                 <Text style={GlobalStyles.h2}>{productInfo.title}</Text>
+                <Text style={GlobalStyles.basicText}>{productInfo.description}</Text>
                 <Text style={[GlobalStyles.basicText, styles.description]}>Quantity Sold: {productInfo.sold}</Text>
-                <Text style={GlobalStyles.basicText}>Rating: {productInfo.rating}</Text>
+                <Text style={GlobalStyles.basicText}>In Stock: {productInfo.quantity}</Text>
                 <View style={styles.desContainer}>
                     <View>
                         <Text style={styles.price}>{productInfo.price} VND</Text>

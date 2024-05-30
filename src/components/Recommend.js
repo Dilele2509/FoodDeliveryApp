@@ -29,7 +29,7 @@ function Recommend(props) {
                         <Image style={[styles.RecommendImg]} source={{ uri: item.thumbnail }} />
                         <View style={[GlobalStyles.pad10, styles.RecommendContent]}>
                             <Text style={[GlobalStyles.h5]}>{item.title}</Text>
-                            <Text style={[styles.discountText]}>{item.quantity}</Text>
+                            <Text style={[styles.discountText]}>sold: {item.sold}</Text>
                         </View>
                         {/* {console.log(item)} */}
                     </TouchableOpacity>

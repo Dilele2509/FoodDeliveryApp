@@ -22,8 +22,9 @@ function MenuBar(props) {
                         style={[styles.RecommendItem]}>
                         {/* {console.log("ProdID: ", String(item.product_id))} */}
                         <Image style={[styles.RecommendImg]} source={{ uri: item.thumbnail }} />
+                       
                         <View style={[GlobalStyles.pad10, styles.RecommendContent]}>
-                            <Text style={[GlobalStyles.h5]}>{item.title}</Text>
+                            <Text style={[GlobalStyles.h5, {maxWidth: 250}]}>{item.title}</Text>
                             <Text style={[styles.discountText]}>Quantity: {item.quantity}</Text>
                         </View>
                     </TouchableOpacity>

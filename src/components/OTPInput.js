@@ -1,57 +1,30 @@
-import React, { useRef, useState } from "react"
-import { StyleSheet, TextInput, View } from "react-native"
-import GlobalStyles, { primaryColor } from "../../assets/styles/GlobalStyles"
+import React, { useRef, useState } from "react";
+import { StyleSheet, TextInput, View } from "react-native";
+import GlobalStyles, { primaryColor } from "../../assets/styles/GlobalStyles";
 
 function OTPInput(props) {
-  const [isFocus, setIsFocus] = useState(false)
-  const [focusedIndex, setFocusedIndex] = useState(null);
-  const { length, value, disabled, onChange } = props
-  const inputRefs = useRef([])
+  const { length, value, disabled, onChange } = props;
+  const inputRefs = useRef([]);
 
-  const onChangeValue = (text, index) => {
-    if (value) {
-      const newValue = value.map((item, valueIndex) => {
-        if (valueIndex === index) {
-          return text;
-        }
-        return item;
-      });
-      // Update the value state with newValue
-      onChange(newValue);
+  const handleInputChange = (text, index) => {
+    const newValue = [...value];
+    newValue[index] = text;
+    onChange(newValue);
+  };
+
+  const handleKeyPress = (event, index) => {
+    if (event.nativeEvent.key === "Backspace" && value[index] === "") {
+      inputRefs.current[index - 1]?.focus();
     }
   };
 
-
-  const handleChange = (text, index) => {
-    onChangeValue(text, index)
-
-    if (text.length !== 0 && text.nativeEvent.text !== '') {
-      //console.log("this text: ", text.nativeEvent.text);
-      return inputRefs.current[index + 1]?.focus()
-    }
-    return inputRefs.current[index - 1]?.focus()
-  }
-
-  const handleBackPress = (event, index) => {
-    if (event.nativeEvent.key === "Backspace") {
-      handleChange("", index);
-    }
-  }
-
   return (
-    <View
-      style={[
-        GlobalStyles.centerScreen,
-      ]}
-    >
+    <View style={GlobalStyles.centerScreen}>
       <View style={styles.container}>
-        {[...Array(length)].map((item, index) => (
+        {Array.from({ length }).map((_, index) => (
           <TextInput
             ref={ref => {
-              //check if ref is not already in array and then add it
-              if (ref && !inputRefs.current.includes(ref)) {
-                inputRefs.current = [...inputRefs.current, ref]
-              }
+              inputRefs.current[index] = ref;
             }}
             key={index}
             maxLength={1}
@@ -60,21 +33,20 @@ function OTPInput(props) {
             editable={!disabled}
             keyboardType="decimal-pad"
             testID={`OTPInput-${index}`}
-            style={[styles.input, isFocus && focusedIndex === index && styles.focusInput]}
-            onFocus={()=>{
-              setIsFocus(true);
-              setFocusedIndex(index)}}
-            onBlur={()=>{
-              setIsFocus(false);
-              setFocusedIndex(null)
-              }}
-            onChange={text => handleChange(text, index)}
-            onKeyPress={event => handleBackPress(event, index)}
+            style={[styles.input, value[index] && styles.focusInput]}
+            value={value[index]}
+            onChangeText={text => {
+              handleInputChange(text, index);
+              if (text && index < length - 1) {
+                inputRefs.current[index + 1]?.focus();
+              }
+            }}
+            onKeyPress={event => handleKeyPress(event, index)}
           />
         ))}
       </View>
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -95,9 +67,9 @@ const styles = StyleSheet.create({
     borderStyle: "solid",
     backgroundColor: primaryColor.whitePrimary
   },
-  focusInput:{
+  focusInput: {
     borderColor: primaryColor.darkPrimary,
   }
-})
+});
 
-export default OTPInput
+export default OTPInput;

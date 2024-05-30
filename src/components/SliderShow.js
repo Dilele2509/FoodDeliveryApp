@@ -57,5 +57,6 @@ const styles = StyleSheet.create({
     },
     page: {
         objectFit: "cover",
+        zIndex: -9999
     },
 })

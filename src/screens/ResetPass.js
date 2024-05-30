@@ -4,43 +4,37 @@ import GlobalStyles, { primaryColor } from "../../assets/styles/GlobalStyles";
 import { InputBox, CheckBox, FillButton } from "../components";
 import axios from "../API/axios";
 
-function Login({ navigation }) {
+function ResetPass({ navigation, route }) {
+    const {email} = route.params;
     const [secureText, setSecureText] = useState(true);
-    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
 
     const handleToggle = () => setSecureText(!secureText);
 
-    const handleLogin = async () => {
-        const config = {
-            headers: {
-                "Content-Type": "application/json"
-            },
-            withCredentials: true
-        };
-
+    const HandleResetPassword = async () => {
         try {
-            if (email === '' || password === '') {
-                Alert.alert("Need to fill them all out");
-                return;
-            }
+        if (password === '' || confirmPassword === '') {
+            Alert.alert("Need to fill them all out");
+            return;
+        }
 
-            const response = await axios.post('/login', { email, password }, config);
+        if (password !== confirmPassword) {
+            Alert.alert("Password and Confirm Password does not match");
+            return;
+        }
 
-            if (response.data.status !== 'Error') {
-                const userInfo = response.data[0];
-                if (userInfo.deleted !== 1) {
-                    console.log('login successful');
-                    navigation.replace('Home');
-                } else {
-                    Alert.alert("Your account has been disabled");
-                }
-            } else {
-                Alert.alert(response.data.message);
-            }
+        const response = await axios.put('/user/reset/', {
+            email: email,
+            password: password,
+        });
+        if (response.data.status !== 'Error') {
+            navigation.replace('Login');
+        } else {
+            Alert.alert(response.data.message)
+        }
         } catch (error) {
-            console.error('Login failed:', error);
-            Alert.alert("Login failed, please try again");
+        console.error('Registration failed:', error);
         }
     };
 
@@ -48,22 +42,23 @@ function Login({ navigation }) {
         <SafeAreaView style={[GlobalStyles.heighFullScreen, { backgroundColor: primaryColor.creamPrimary }]}>
             <ScrollView contentContainerStyle={[GlobalStyles.padScreen20, styles.flex1]}>
                 <View style={{ flex: 9 }}>
-                    <Text style={[GlobalStyles.h1, { color: primaryColor.organPrimary }]}>SIGN IN</Text>
+                    <Text style={[GlobalStyles.h1, { color: primaryColor.organPrimary }]}>Reset Password</Text>
                     <View style={styles.mTop25}>
                         <InputBox
-                            text="Email"
+                            text="New Password"
                             textColor={primaryColor.darkPrimary}
-                            placeholder="Enter your email"
-                            value={email}
-                            onChangeText={setEmail}
-                        />
-                        <InputBox
-                            text="Password"
-                            textColor={primaryColor.darkPrimary}
-                            placeholder="Enter your password"
+                            placeholder="Enter new password"
                             secureTextEntry={secureText}
                             value={password}
                             onChangeText={setPassword}
+                        />
+                        <InputBox
+                            text="Confirm Password"
+                            textColor={primaryColor.darkPrimary}
+                            placeholder="Confirm your password"
+                            secureTextEntry={secureText}
+                            value={confirmPassword}
+                            onChangeText={setConfirmPassword}
                         />
                         <View style={[styles.mt15, GlobalStyles.flex, GlobalStyles.inLine, { justifyContent: "space-between" }]}>
                             <CheckBox
@@ -74,14 +69,11 @@ function Login({ navigation }) {
                                 widthSize={130}
                                 text={"Show Password"}
                             />
-                            <TouchableOpacity onPress={()=>navigation.navigate("forgotPass")}>
-                                <Text style={[GlobalStyles.basicText, { color: primaryColor.blackPrimary }]}>Forgot Password?</Text>
-                            </TouchableOpacity>
                         </View>
                         <View style={[styles.mTop25, GlobalStyles.alightItemCenter]}>
-                            <FillButton onPress={handleLogin} color={primaryColor.whitePrimary} backgroundColor={primaryColor.organPrimary} text={"Sign In"} />
-                            <TouchableOpacity onPress={() => navigation.navigate("SignUpInfo")} style={styles.mTop25}>
-                                <Text style={[GlobalStyles.basicText, { color: primaryColor.blackPrimary }]}>Don't have an account?</Text>
+                            <FillButton onPress={HandleResetPassword} color={primaryColor.whitePrimary} backgroundColor={primaryColor.organPrimary} text={"Continue"} />
+                            <TouchableOpacity onPress={() => navigation.navigate("Login")} style={styles.mTop25}>
+                                <Text style={[GlobalStyles.basicText, { color: primaryColor.blackPrimary }]}>Back to Login?</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -108,4 +100,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default Login;
+export default ResetPass;

@@ -5,7 +5,7 @@ import { Fontisto } from '@expo/vector-icons';
 
 function SearchFilter(props) {
     const [isFocus, setIsFocus] = useState(false);
-    const { placeholder, iconColor } = props;
+    const { placeholder, iconColor, value, onChangeText } = props;
 
     return ( 
         <View style={[{alignItems: "center"}]}>
@@ -17,6 +17,8 @@ function SearchFilter(props) {
                     placeholderTextColor={"#999"}
                     onFocus={() => setIsFocus(true)}
                     onBlur={() => setIsFocus(false)}
+                    value={value}
+                    onChangeText={onChangeText}
                     style={styles.input}
                 />
             </View>

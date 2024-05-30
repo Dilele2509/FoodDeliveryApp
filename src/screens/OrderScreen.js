@@ -63,10 +63,13 @@ const OrderScreen = (props) => {
     }
   
     return (
-      <View key={item.order_id} style={styles.orderItem}>
-        <Text>{item.order_id}</Text>
-        <Text style={{ color: statusColor }}>{statusLabel}</Text>
-        <Text>{item.total}</Text>
+      <View style={{marginBottom: 20}}>
+        <Text>{item.order_date}</Text>
+        <TouchableOpacity onPress={()=>navigation.navigate("OrderDetail", {order_id: item.order_id})} key={item.order_id} style={styles.orderItem}>
+          <Text>{item.order_id}</Text>
+          <Text style={{ color: statusColor }}>{statusLabel}</Text>
+          <Text>{item.total}</Text>
+        </TouchableOpacity>
       </View>
     );
   };  
@@ -174,6 +177,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     borderColor: primaryColor.blackPrimary,
-    marginBottom: 10
+    marginTop: 10
   }
 });

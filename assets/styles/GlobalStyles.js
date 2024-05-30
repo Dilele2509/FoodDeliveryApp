@@ -9,7 +9,9 @@ export const primaryColor = {
     creamPrimary: "#FFFBEB",
     whitePrimary: "#fff",
     blackPrimary: "#444",
-    brownPrimary: "#C06014"
+    brownPrimary: "#C06014",
+    greenPrimary: "#379237",
+    redPrimary: "#CD1818"
 };
 
 // global style

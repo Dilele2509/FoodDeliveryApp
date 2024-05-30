@@ -50,7 +50,7 @@ function WelcomeScreen({navigation}) {
                         color={primaryColor.whitePrimary}
                         backgroundColor={primaryColor.organPrimary} />
 
-                        <TouchableOpacity onPress={()=>navigation.navigate("Signup")}>
+                        <TouchableOpacity onPress={()=>navigation.navigate("SignUpInfo")}>
                             <Text style={[styles.commonText]}>Do not have account?</Text>
                         </TouchableOpacity>
                     </Animated.View>

@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity, Image, Alert } from 'react-native';
 import React, { useContext, useState, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import GlobalStyles, { primaryColor } from '../../assets/styles/GlobalStyles';
@@ -9,7 +9,7 @@ import axios from '../API/axios';
 
 const AccountScreen = ({ navigation }) => {
   const { handlePress } = useContext(FooterContext); // Get handlePress from FooterContext
-  const [userInfo, setUserInfo] =useState([]);
+  const [userInfo, setUserInfo] = useState([]);
 
   const fetchData = useCallback(() => {
     axios.get(`/user/id`)
@@ -27,12 +27,42 @@ const AccountScreen = ({ navigation }) => {
       fetchData();
     }, [fetchData])
   );
+
+  const handleLogout = () => {
+    // Show confirmation dialog
+    Alert.alert(
+      'Confirm',
+      'Are you sure you want to log out?',
+      [
+        {
+          text: 'No',
+          onPress: () => console.log('Logout Pressed'),
+          style: 'cancel'
+        },
+        {
+          text: 'Yes',
+          onPress: () => {
+            axios.get("/logout")
+              .then((response) => {
+                console.log(response.data.status);
+                if (response.data.status == true) {
+                  navigation.replace("Welcome")
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              })
+          }
+        }
+      ],
+    );
+  }
   return (
     <View style={[styles.container, { backgroundColor: primaryColor.creamPrimary }]}>
       <View style={styles.headerContainer}>
         <Image style={styles.headerImg} source={require("../../assets/images/takoyaki.jpeg")} />
         <View style={styles.userContainer}>
-          <Image style={styles.userAva} source={{uri: userInfo.avatar}} />
+          <Image style={styles.userAva} source={{ uri: userInfo.avatar }} />
           <View style={styles.userContent}>
             <Text style={[styles.userName]}>{userInfo.full_name}</Text>
           </View>
@@ -52,6 +82,10 @@ const AccountScreen = ({ navigation }) => {
         <TouchableOpacity style={[styles.contentItem]}>
           <Feather name="settings" size={24} color="#2A629A" />
           <Text style={[styles.contentText]}>Setting</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleLogout} style={[styles.contentItem]}>
+          <Feather name="log-out" size={24} color={primaryColor.redPrimary} />
+          <Text style={[styles.contentText]}>Log Out</Text>
         </TouchableOpacity>
       </View>
       <SafeAreaView style={styles.footerContainer}>

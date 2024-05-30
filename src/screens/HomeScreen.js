@@ -1,42 +1,20 @@
 import React, { useState, useCallback } from "react";
-import { SafeAreaView, FlatList, StyleSheet } from "react-native";
-import { Categories, Header, Recommend, SliderShow, TopRatedRes, MenuBar, Footer, CartView, CartNoti } from "../components";
+import { SafeAreaView, FlatList, StyleSheet, View, Text, TouchableOpacity, Image } from "react-native";
+import { Categories, Header, Recommend, SliderShow, TopRatedRes, MenuBar, Footer, CartNoti } from "../components";
 import GlobalStyles, { primaryColor } from "../../assets/styles/GlobalStyles";
 import axios from "../API/axios";
 import { useFocusEffect } from '@react-navigation/native';
 
 function HomeScreen({ navigation }) {
-    const topRateList = [
-        {
-            id: 1,
-            name: "Gà rán Popeye's",
-            itemURI: 'https://drive.fife.usercontent.google.com/u/0/d/16wuSJ_suOk3NdWrykcftGL28wdX3tAjx=w200-h190-p-k-rw-v1-nu-iv1',
-            discount: "Discount 40K"
-        },
-        {
-            id: 2,
-            name: "Gà rán Popeye's",
-            itemURI: 'https://drive.fife.usercontent.google.com/u/0/d/16wuSJ_suOk3NdWrykcftGL28wdX3tAjx=w200-h190-p-k-rw-v1-nu-iv1',
-            discount: "Discount 40K"
-        },
-        {
-            id: 3,
-            name: "Gà rán Popeye's",
-            itemURI: 'https://drive.fife.usercontent.google.com/u/0/d/16wuSJ_suOk3NdWrykcftGL28wdX3tAjx=w200-h190-p-k-rw-v1-nu-iv1',
-            discount: "Discount 40K"
-        },
-        {
-            id: 4,
-            name: "Gà rán Popeye's",
-            itemURI: 'https://drive.fife.usercontent.google.com/u/0/d/16wuSJ_suOk3NdWrykcftGL28wdX3tAjx=w200-h190-p-k-rw-v1-nu-iv1',
-            discount: "Discount 40K"
-        },
-    ];
-
     const [products, setProducts] = useState([]);
     const [userInfo, setUserInfo] = useState([]);
     const [recentProduct, setRecentProduct] = useState([]);
     const [cartCount, setCartCount] = useState(0);
+    const [bestList, setBestList] = useState([]);
+    const [hasResult, setHasResult] = useState(false);
+    const [searchResult, setSearchResult] = useState([]);
+    const [searchData, setSearchData] = useState('');
+
 
     const fetchRecentProducts = async (recentList) => {
         try {
@@ -81,13 +59,22 @@ function HomeScreen({ navigation }) {
             });
 
         axios.get('/cart')
-            .then((response)=>{
+            .then((response) => {
                 //console.log(response.data.length, response.data);
                 setCartCount(response.data.length)
             })
-            .catch((error)=>{
+            .catch((error) => {
                 console.log('Error fetching recent data: ', error);
             })
+
+        axios.get('/product/bestseller')
+            .then((response) => {
+                setBestList(response.data)
+            })
+            .catch((error) => {
+                console.log('Error fetching best seller data: ', error);
+            })
+
     }, []);
 
     useFocusEffect(
@@ -115,20 +102,20 @@ function HomeScreen({ navigation }) {
                         )}
                     </>
                 );
-            case 'recommend2':
+            /* case 'recommend2':
                 return (
                     <Recommend
                         listTitle="Recommend"
                         itemList={products}
                         onPress={() => navigation.navigate("ViewAll", { titlePage: 'Recommended', prevPage: 'Home', allList: products })}
                     />
-                );
+                ); */
             case 'topRatedRes':
                 return (
                     <TopRatedRes
-                        listTitle="Top Rating"
-                        itemList={topRateList}
-                        onPress={() => navigation.navigate("ViewAll", { titlePage: 'Top Rating Restaurant', prevPage: 'Home', allList: products })}
+                        listTitle="Best Seller"
+                        itemList={bestList}
+                        onPress={() => navigation.navigate("ViewAll", { titlePage: 'Top Rating Restaurant', prevPage: 'Home', allList: bestList })}
                         navigation={navigation}
                     />
                 );
@@ -148,9 +135,38 @@ function HomeScreen({ navigation }) {
         { id: 'menuBar', type: 'menuBar' },
     ];
 
+
     return (
         <SafeAreaView style={styles.safeArea}>
-            <Header userName={userInfo.full_name} />
+            <Header
+                userName={userInfo.full_name}
+                setHasResult={setHasResult}
+                searchResult={searchResult}
+                setSearchResult={setSearchResult}
+                searchData={searchData}
+                setSearchData={setSearchData}
+            />
+            {hasResult && (
+                <FlatList
+                    style={styles.viewSearchBox}
+                    data={searchResult}
+                    contentContainerStyle={{ paddingBottom: 20 }}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity
+                            onPress={() => navigation.navigate("Product", { id: String(item.product_id) })}
+                            key={item.product_id}
+                            style={styles.recentItem}
+                        >
+                            <Image style={styles.recentImg} source={{ uri: item.thumbnail }} />
+                            <View style={[GlobalStyles.pad10, styles.recentContent]}>
+                                <Text style={[GlobalStyles.h5]}>{item.title}</Text>
+                            </View>
+                        </TouchableOpacity>
+                    )}
+                    keyExtractor={item => item.product_id.toString()}
+                />
+            )}
+
             <FlatList
                 style={[{ marginBottom: 35 }]}
                 data={sections}
@@ -158,7 +174,7 @@ function HomeScreen({ navigation }) {
                 keyExtractor={item => item.id}
                 contentContainerStyle={styles.flatList}
             />
-            {cartCount > 0 && <CartNoti cartCount={cartCount} navigation={navigation}/>}
+            {cartCount > 0 && <CartNoti cartCount={cartCount} navigation={navigation} />}
             <Footer navigation={navigation} />
         </SafeAreaView>
     );
@@ -172,6 +188,46 @@ const styles = StyleSheet.create({
     flatList: {
         flexGrow: 1,
         paddingBottom: 20,
+    },
+    viewSearchBox: {
+        backgroundColor: primaryColor.whitePrimary,
+        width: "90%",
+        height: 200,
+        borderWidth: 1,
+        borderColor: primaryColor.blackPrimary,
+        borderRadius: 10,
+        position: "absolute",
+        top: 185,
+        left: "5%",
+        zIndex: 9999,
+        padding: 10,
+    },
+    recentItem: {
+        flexDirection: "row",
+        marginBottom: 10,
+        alignItems: "center", // Align items vertically
+    },
+    recentImg: {
+        width: 60,
+        height: 60,
+        resizeMode: "cover",
+    },
+    recentContent: {
+        flex: 1,
+        flexDirection: "column",
+        height: 60,
+        justifyContent: "space-between",
+        backgroundColor: primaryColor.whitePrimary,
+        marginLeft: 10,
+        padding: 10,
+    },
+    discountText: {
+        padding: 3,
+        alignSelf: "flex-start",
+        borderWidth: 1,
+        borderColor: "#C40C0C",
+        color: "#C40C0C",
+        fontSize: 12,
     },
 });
 

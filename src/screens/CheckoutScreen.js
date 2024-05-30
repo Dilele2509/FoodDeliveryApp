@@ -9,18 +9,15 @@ import { AddressBox, InputBox } from '../components';
 const { width } = Dimensions.get('window');
 
 const CheckoutScreen = ({ navigation }) => {
-    const [prodIdList, setProdIdList] = useState([]);
     const [cartProduct, setCartProduct] = useState([]);
     const [isOpen, setIsOpen] = useState(false);
-    const [deliInfoList, setDeliInfoList] = useState(
-        {
-            receiver: '',
-            phone: '',
-            address: '',
-            note: '',
-            prodIdList: prodIdList
-        }
-    )
+    const [deliInfoList, setDeliInfoList] = useState({
+        receiver: '',
+        phone: '',
+        address: '',
+        note: '',
+        prodIdList: []
+    });
 
     const fetchCartProducts = async (list) => {
         try {
@@ -28,11 +25,12 @@ const CheckoutScreen = ({ navigation }) => {
                 const productResponse = await axios.post('product/recent', { product_id: item.product_id });
                 return { ...productResponse.data[0], cartQuantity: item.quantity }; // Include cart quantity in the product data
             }));
-            const idList = await Promise.all(list.map(async (item) => {
-                return item.product_id
-            }));
-            setProdIdList(idList);
+            const idList = list.map(item => {return item.product_id});
+            console.log("id list: ",idList);
             setCartProduct(productList);
+
+            // Update deliInfoList with new prodIdList
+            setDeliInfoList((prev) => ({ ...prev, prodIdList: idList }));
         } catch (error) {
             console.error('Error fetching recent product data:', error);
         }
@@ -42,13 +40,12 @@ const CheckoutScreen = ({ navigation }) => {
         axios.get(`/user/id`)
             .then((response) => {
                 const userData = response.data.user[0];
-                setDeliInfoList({
+                setDeliInfoList((prev) => ({
+                    ...prev,
                     receiver: userData.full_name,
                     phone: userData.phone_num,
                     address: userData.address,
-                    note: '',
-                    prodIdList: prodIdList
-                })
+                }));
             })
             .catch((error) => {
                 console.error('Error fetching user data:', error);
@@ -59,7 +56,7 @@ const CheckoutScreen = ({ navigation }) => {
                 fetchCartProducts(validCartList);
             })
             .catch((error) => {
-                console.error('Error fetching user data:', error);
+                console.error('Error fetching cart data:', error);
             });
     }, []);
 
@@ -73,20 +70,21 @@ const CheckoutScreen = ({ navigation }) => {
         return cartProduct.reduce((total, item) => total + item.price * item.cartQuantity, 0);
     };
 
-    const handleOrder = () =>{
+    const handleOrder = () => {
+        console.log('check order info: ',deliInfoList);
         axios.post('/order/add', {
             receiver: deliInfoList.receiver,
             receiver_phone: deliInfoList.phone,
             delivery_address: deliInfoList.address,
             note: deliInfoList.note,
-            product_ids: deliInfoList.prodIdList    
+            product_ids: deliInfoList.prodIdList
         })
-            .then((response)=>{
-                //console.log(response.data);
+            .then((response) => {
+                console.log(response.data);
                 navigation.navigate("OrderSuccess")
             })
-            .catch((error)=>{
-                console.log('can not add order: ', error);
+            .catch((error) => {
+                console.log('cannot add order: ', error);
             })
     }
 
