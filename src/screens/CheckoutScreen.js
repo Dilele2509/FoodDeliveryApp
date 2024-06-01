@@ -4,13 +4,14 @@ import { useFocusEffect } from '@react-navigation/native';
 import axios from '../API/axios';
 import GlobalStyles, { primaryColor } from '../../assets/styles/GlobalStyles';
 import { AntDesign, Entypo, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
-import { AddressBox, InputBox } from '../components';
+import { AddressBox, InputBox, SplashScreen } from '../components';
 
 const { width } = Dimensions.get('window');
 
 const CheckoutScreen = ({ navigation }) => {
     const [cartProduct, setCartProduct] = useState([]);
     const [isOpen, setIsOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [deliInfoList, setDeliInfoList] = useState({
         receiver: '',
         phone: '',
@@ -71,6 +72,7 @@ const CheckoutScreen = ({ navigation }) => {
     };
 
     const handleOrder = () => {
+        setIsLoading(true)
         console.log('check order info: ',deliInfoList);
         axios.post('/order/add', {
             receiver: deliInfoList.receiver,
@@ -86,6 +88,9 @@ const CheckoutScreen = ({ navigation }) => {
             .catch((error) => {
                 console.log('cannot add order: ', error);
             })
+            .finally(() => {
+                setIsLoading(false); // Set loading state to false after fetching data
+            });
     }
 
     const renderItem = ({ item }) => (
@@ -105,102 +110,105 @@ const CheckoutScreen = ({ navigation }) => {
 
     return (
         <SafeAreaView style={[styles.safeArea, { backgroundColor: primaryColor.creamPrimary }]}>
-            <View style={[GlobalStyles.padScreen20, styles.headerPage]}>
-                <TouchableOpacity onPress={() => { navigation.goBack() }}>
-                    <AntDesign name="arrowleft" size={24} color={primaryColor.organPrimary} />
-                </TouchableOpacity>
-                <Text style={styles.titleText}>Checkout</Text>
-            </View>
-            {/* Delivery address */}
-            <TouchableOpacity onPress={() => setIsOpen(true)} style={styles.deliInfo}>
-                <View style={styles.deliItem}>
-                    <Entypo name="location" size={24} color={primaryColor.organPrimary} />
-                    <View style={styles.deliContainer}>
-                        <Text style={[GlobalStyles.h5]}>Delivery Address</Text>
-                        <View style={styles.deliDetail}>
-                            <Text style={[GlobalStyles.basicText, { color: "#333" }]}>{deliInfoList.receiver}</Text>
-                            <Text style={[GlobalStyles.basicText, { color: "#333" }]}>{deliInfoList.phone}</Text>
-                            <Text style={[GlobalStyles.basicText, { color: "#333" }]}>{deliInfoList.address}</Text>
-                        </View>
-                    </View>
+            <SplashScreen isLoading={isLoading}/>
+            {!isLoading&&(<>
+                <View style={[GlobalStyles.padScreen20, styles.headerPage]}>
+                    <TouchableOpacity onPress={() => { navigation.goBack() }}>
+                        <AntDesign name="arrowleft" size={24} color={primaryColor.organPrimary} />
+                    </TouchableOpacity>
+                    <Text style={styles.titleText}>Checkout</Text>
                 </View>
-            </TouchableOpacity>
-            {/* Container content */}
-            <FlatList
-                data={cartProduct}
-                style={[styles.container]}
-                renderItem={renderItem}
-                keyExtractor={(item) => item.product_id.toString()}
-                contentContainerStyle={{ paddingBottom: 50 }}
-            />
-            {/* Detail for bill */}
-            <ScrollView
-                contentContainerStyle={{ paddingBottom: 50 }}
-                style={[styles.container, { borderTopWidth: 1, borderTopColor: "#333", borderRadius: 10, maxHeight: 350 }]}>
-                <View>
-                    {/* Notes */}
-                    <View>
-                        <View style={[{ flexDirection: "row", alignItems: "center", marginBottom: -20 }]}>
-                            <FontAwesome5 name="money-check-alt" size={24} color={primaryColor.organPrimary} />
-                            <Text style={[GlobalStyles.h5, { color: primaryColor.organPrimary, marginLeft: 10 }]}>Note:</Text>
-                        </View>
-                        <View>
-                            <InputBox
-                                style={styles.input}
-                                value={deliInfoList.note}
-                                onChangeText={(text) => setDeliInfoList({ ...deliInfoList, note: text })}
-                                placeholder={'Enter your notes for us'}
-                            />
+                {/* Delivery address */}
+                <TouchableOpacity onPress={() => setIsOpen(true)} style={styles.deliInfo}>
+                    <View style={styles.deliItem}>
+                        <Entypo name="location" size={24} color={primaryColor.organPrimary} />
+                        <View style={styles.deliContainer}>
+                            <Text style={[GlobalStyles.h5]}>Delivery Address</Text>
+                            <View style={styles.deliDetail}>
+                                <Text style={[GlobalStyles.basicText, { color: "#333" }]}>{deliInfoList.receiver}</Text>
+                                <Text style={[GlobalStyles.basicText, { color: "#333" }]}>{deliInfoList.phone}</Text>
+                                <Text style={[GlobalStyles.basicText, { color: "#333" }]}>{deliInfoList.address}</Text>
+                            </View>
                         </View>
                     </View>
-
-                    {/* Payment method */}
-                    <View style={{ marginTop: 20 }}>
-                        <View style={[{ flexDirection: "row", alignItems: "center", marginBottom: 15 }]}>
-                            <FontAwesome5 name="money-check-alt" size={24} color={primaryColor.organPrimary} />
-                            <Text style={[GlobalStyles.h5, { color: primaryColor.organPrimary, marginLeft: 10 }]}>Payment Method</Text>
+                </TouchableOpacity>
+                {/* Container content */}
+                <FlatList
+                    data={cartProduct}
+                    style={[styles.container]}
+                    renderItem={renderItem}
+                    keyExtractor={(item) => item.product_id.toString()}
+                    contentContainerStyle={{ paddingBottom: 50 }}
+                />
+                {/* Detail for bill */}
+                <ScrollView
+                    contentContainerStyle={{ paddingBottom: 50 }}
+                    style={[styles.container, { borderTopWidth: 1, borderTopColor: "#333", borderRadius: 10, maxHeight: 350 }]}>
+                    <View>
+                        {/* Notes */}
+                        <View>
+                            <View style={[{ flexDirection: "row", alignItems: "center", marginBottom: -20 }]}>
+                                <FontAwesome5 name="money-check-alt" size={24} color={primaryColor.organPrimary} />
+                                <Text style={[GlobalStyles.h5, { color: primaryColor.organPrimary, marginLeft: 10 }]}>Note:</Text>
+                            </View>
+                            <View>
+                                <InputBox
+                                    style={styles.input}
+                                    value={deliInfoList.note}
+                                    onChangeText={(text) => setDeliInfoList({ ...deliInfoList, note: text })}
+                                    placeholder={'Enter your notes for us'}
+                                />
+                            </View>
                         </View>
-                        <TouchableOpacity style={styles.contentItem}>
-                            <Text>Payment on Delivery</Text>
+    
+                        {/* Payment method */}
+                        <View style={{ marginTop: 20 }}>
+                            <View style={[{ flexDirection: "row", alignItems: "center", marginBottom: 15 }]}>
+                                <FontAwesome5 name="money-check-alt" size={24} color={primaryColor.organPrimary} />
+                                <Text style={[GlobalStyles.h5, { color: primaryColor.organPrimary, marginLeft: 10 }]}>Payment Method</Text>
+                            </View>
+                            <TouchableOpacity style={styles.contentItem}>
+                                <Text>Payment on Delivery</Text>
+                            </TouchableOpacity>
+                        </View>
+    
+                        {/* Invoice Details */}
+                        <View style={[styles.payDetail]}>
+                            <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                <MaterialCommunityIcons name="note-text-outline" size={32} color={primaryColor.organPrimary} />
+                                <Text style={[{ color: primaryColor.organPrimary, marginLeft: 10 }, GlobalStyles.h5]}>Invoice Details:</Text>
+                            </View>
+                            <View style={[{ marginTop: 15, flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: 10 }]}>
+                                <View>
+                                    <Text style={[styles.detailText]}>Cost of goods: </Text>
+                                    <Text style={[styles.detailText]}>Shipping cost: </Text>
+                                    <Text style={[styles.detailText]}>Shipping discount: </Text>
+                                    <Text style={[styles.detailText, GlobalStyles.h5]}>Total: </Text>
+                                </View>
+                                <View>
+                                    <Text style={[styles.detailText, { textAlign: 'right' }]}>{calculateTotalPrice(cartProduct)}</Text>
+                                    <Text style={[styles.detailText, { textAlign: 'right' }]}>16000</Text>
+                                    <Text style={[styles.detailText, { textAlign: 'right' }]}>-16000</Text>
+                                    <Text style={[styles.detailText, GlobalStyles.h5, { color: primaryColor.organPrimary, textAlign: 'right' }]}>{calculateTotalPrice(cartProduct)}</Text>
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+                </ScrollView>
+                {/* Footer */}
+                <View style={styles.footer}>
+                    <View style={styles.footerContent}>
+                        <View style={[{ flexDirection: "row", alignItems: "center" }]}>
+                            <Text style={[GlobalStyles.basicText]}>Total Price: </Text>
+                            <Text style={[GlobalStyles.h5, { color: primaryColor.organPrimary }]}>{calculateTotalPrice(cartProduct)} VND</Text>
+                        </View>
+                        <TouchableOpacity onPress={handleOrder} style={[styles.checkoutBtn]}>
+                            <Text style={[GlobalStyles.h5, { color: primaryColor.whitePrimary }]}>Order</Text>
                         </TouchableOpacity>
                     </View>
-
-                    {/* Invoice Details */}
-                    <View style={[styles.payDetail]}>
-                        <View style={{ flexDirection: "row", alignItems: "center" }}>
-                            <MaterialCommunityIcons name="note-text-outline" size={32} color={primaryColor.organPrimary} />
-                            <Text style={[{ color: primaryColor.organPrimary, marginLeft: 10 }, GlobalStyles.h5]}>Invoice Details:</Text>
-                        </View>
-                        <View style={[{ marginTop: 15, flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: 10 }]}>
-                            <View>
-                                <Text style={[styles.detailText]}>Cost of goods: </Text>
-                                <Text style={[styles.detailText]}>Shipping cost: </Text>
-                                <Text style={[styles.detailText]}>Shipping discount: </Text>
-                                <Text style={[styles.detailText, GlobalStyles.h5]}>Total: </Text>
-                            </View>
-                            <View>
-                                <Text style={[styles.detailText, { textAlign: 'right' }]}>{calculateTotalPrice(cartProduct)}</Text>
-                                <Text style={[styles.detailText, { textAlign: 'right' }]}>16000</Text>
-                                <Text style={[styles.detailText, { textAlign: 'right' }]}>-16000</Text>
-                                <Text style={[styles.detailText, GlobalStyles.h5, { color: primaryColor.organPrimary, textAlign: 'right' }]}>{calculateTotalPrice(cartProduct)}</Text>
-                            </View>
-                        </View>
-                    </View>
                 </View>
-            </ScrollView>
-            {/* Footer */}
-            <View style={styles.footer}>
-                <View style={styles.footerContent}>
-                    <View style={[{ flexDirection: "row", alignItems: "center" }]}>
-                        <Text style={[GlobalStyles.basicText]}>Total Price: </Text>
-                        <Text style={[GlobalStyles.h5, { color: primaryColor.organPrimary }]}>{calculateTotalPrice(cartProduct)} VND</Text>
-                    </View>
-                    <TouchableOpacity onPress={handleOrder} style={[styles.checkoutBtn]}>
-                        <Text style={[GlobalStyles.h5, { color: primaryColor.whitePrimary }]}>Order</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
-            {isOpen && <AddressBox setIsOpen={setIsOpen} item={deliInfoList} setItem={setDeliInfoList} />}
+                {isOpen && <AddressBox setIsOpen={setIsOpen} item={deliInfoList} setItem={setDeliInfoList} />}
+            </>)}
         </SafeAreaView>
     );
 }
@@ -246,6 +254,7 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         backgroundColor: primaryColor.whitePrimary,
         flexDirection: "row",
+        alignItems: "center"
     },
     orderNoti: {
         width: "100%",
@@ -285,7 +294,7 @@ const styles = StyleSheet.create({
     },
     priceInfo: {
         flex: 5,
-        height: 50,
+        minHeight: 50,
         flexDirection: "column",
         justifyContent: "space-between",
     },

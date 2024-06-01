@@ -1,11 +1,26 @@
 import React, { useState } from "react";
-import GlobalStyles, { primaryColor } from "../../assets/styles/GlobalStyles";
-import { StyleSheet, TextInput, View } from "react-native";
-import { Fontisto } from '@expo/vector-icons';
+import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
+import { Fontisto, Feather } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
+import { primaryColor } from "../../assets/styles/GlobalStyles";
 
 function SearchFilter(props) {
     const [isFocus, setIsFocus] = useState(false);
-    const { placeholder, iconColor, value, onChangeText } = props;
+    const { placeholder, iconColor, value, onChangeText, onFileChosen } = props;
+
+    const handleChooseFile = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        });
+
+        if (!result.canceled) {
+            const fileUri = result.assets[0].uri;
+            onFileChosen(fileUri);
+        }
+    };
 
     return ( 
         <View style={[{alignItems: "center"}]}>
@@ -21,6 +36,9 @@ function SearchFilter(props) {
                     onChangeText={onChangeText}
                     style={styles.input}
                 />
+                <TouchableOpacity onPress={handleChooseFile}>
+                    <Feather name="camera" size={24} color={iconColor} style={styles.icon} />
+                </TouchableOpacity>
             </View>
         </View>
      );

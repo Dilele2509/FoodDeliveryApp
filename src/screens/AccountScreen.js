@@ -69,20 +69,27 @@ const AccountScreen = ({ navigation }) => {
         </View>
       </View>
       <View style={styles.contentContainer}>
+        {/* check cart */}
         <TouchableOpacity
           onPress={() => { navigation.navigate("Cart") }}
           style={[styles.contentItem]}>
           <Feather name="shopping-cart" size={24} color={primaryColor.organPrimary} />
           <Text style={[styles.contentText]}>My Cart</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.contentItem]}>
+
+        {/* edit information */}
+        <TouchableOpacity onPress={()=>navigation.navigate("EditUser", {titlePage: "Information & Contact"})} style={[styles.contentItem]}>
           <AntDesign name="infocirlceo" size={24} color={primaryColor.darkPrimary} />
           <Text style={[styles.contentText]}>Information & Contact</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.contentItem]}>
+
+        {/* change password */}
+        <TouchableOpacity onPress={()=>navigation.navigate("EditSecurity", {titlePage: "Security Setting"})} style={[styles.contentItem]}>
           <Feather name="settings" size={24} color="#2A629A" />
-          <Text style={[styles.contentText]}>Setting</Text>
+          <Text style={[styles.contentText]}>Security Setting</Text>
         </TouchableOpacity>
+
+
         <TouchableOpacity onPress={handleLogout} style={[styles.contentItem]}>
           <Feather name="log-out" size={24} color={primaryColor.redPrimary} />
           <Text style={[styles.contentText]}>Log Out</Text>

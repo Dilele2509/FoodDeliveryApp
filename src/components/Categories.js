@@ -62,7 +62,7 @@ function Categories(props) {
                             setListProduct(1, "Main Dish");
                         }}
                         style={[GlobalStyles.ml20, styles.catItem]}>
-                        <MaterialCommunityIcons style={{ marginBottom: 7 }} name="food-turkey" size={32} color="#FB6D48" />
+                        <MaterialCommunityIcons style={{ marginBottom: 7 }} name="food-turkey" size={28} color="#FB6D48" />
                         <Text style={[{ color: "#DD5746" }]}>Main Dish</Text>
                     </TouchableOpacity>
 
@@ -71,7 +71,7 @@ function Categories(props) {
                             setListProduct(2, "Side Dish");
                         }}
                         style={[GlobalStyles.ml20, styles.catItem]}>
-                        <Ionicons style={{ marginBottom: 7 }} name="fast-food" size={32} color="#FFAF45" />
+                        <Ionicons style={{ marginBottom: 7 }} name="fast-food" size={28} color="#FFAF45" />
                         <Text style={[{ color: "#FFAF45" }]}>Side Dish</Text>
                     </TouchableOpacity>
 
@@ -80,7 +80,7 @@ function Categories(props) {
                             setListProduct(3, "Snack");
                         }}
                         style={[GlobalStyles.ml20, styles.catItem]}>
-                        <MaterialCommunityIcons style={{ marginBottom: 7 }} name="food-hot-dog" size={32} color="#ED9455" />
+                        <MaterialCommunityIcons style={{ marginBottom: 7 }} name="food-hot-dog" size={28} color="#ED9455" />
                         <Text style={[{ color: "#ED9455" }]}>Rice</Text>
                     </TouchableOpacity>
 
@@ -89,7 +89,7 @@ function Categories(props) {
                             setListProduct(4, "Drink");
                         }}
                         style={[GlobalStyles.ml20, styles.catItem]}>
-                        <Entypo style={{ marginBottom: 7 }} name="drink" size={32} color="#40679E" />
+                        <Entypo style={{ marginBottom: 7 }} name="drink" size={28} color="#40679E" />
                         <Text style={[{ color: "#40679E" }]}>Drink</Text>
                     </TouchableOpacity>
 
@@ -98,7 +98,7 @@ function Categories(props) {
                             navigation.navigate("ViewAll", { titlePage: 'Menu', prevPage: 'Home', allList: productAllList })
                         }}
                         style={[GlobalStyles.ml20, styles.catItem]}>
-                        <MaterialCommunityIcons style={{ marginBottom: 7 }} name="food-fork-drink" size={32} color="#ED9455" />
+                        <MaterialCommunityIcons style={{ marginBottom: 7 }} name="food-fork-drink" size={28} color="#ED9455" />
                         <Text style={[{ color: "#ED9455" }]}>All Menu</Text>
                     </TouchableOpacity>
                 </View>
@@ -112,9 +112,9 @@ function Categories(props) {
 
 const styles = StyleSheet.create({
     wrapper: {
-        marginTop: 15,
+        marginTop: 10,
         position: 'relative',
-        height: 80,
+        height: 70,
     },
     scrollView: {
         flex: 1,

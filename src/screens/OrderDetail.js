@@ -308,6 +308,7 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         backgroundColor: primaryColor.whitePrimary,
         flexDirection: "row",
+        alignItems: "center"
     },
     orderNoti: {
         width: "100%",
@@ -347,7 +348,7 @@ const styles = StyleSheet.create({
     },
     priceInfo: {
         flex: 5,
-        height: 50,
+        minHeight: 50,
         flexDirection: "column",
         justifyContent: "space-between",
     },

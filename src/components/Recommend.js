@@ -26,7 +26,12 @@ function Recommend(props) {
                         key={item.product_id} 
                         style={[styles.RecommendItem]}
                         onPress={()=>navigation.navigate("Product", {id: String(item.product_id)})}>
-                        <Image style={[styles.RecommendImg]} source={{ uri: item.thumbnail }} />
+                        <View style={[styles.imgAre]}>
+                            {item.deleted == 1 ? (<View style={[styles.disPro]}>
+                                <Text style={[styles.disProText]}>Unavailable</Text>
+                            </View>) : null}
+                            <Image style={[styles.RecommendImg]} source={{ uri: item.thumbnail }} />
+                        </View>
                         <View style={[GlobalStyles.pad10, styles.RecommendContent]}>
                             <Text style={[GlobalStyles.h5]}>{item.title}</Text>
                             <Text style={[styles.discountText]}>sold: {item.sold}</Text>
@@ -49,6 +54,26 @@ const styles = StyleSheet.create({
         height: 100,
         resizeMode: "center",
         objectFit: "cover"
+    },
+    imgAre: {
+        width: 100,
+        height: 100,
+    },
+    disPro: {
+        position: "absolute",
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+        zIndex: 9999,
+        backgroundColor: "rgba(0,0,0,.5)",
+        alignItems: "center",
+        justifyContent: "center"
+    },
+    disProText: {
+        fontWeight: "500",
+        color: primaryColor.whitePrimary,
+        fontSize: 15
     },
     RecommendContent: {
         display: "flex",

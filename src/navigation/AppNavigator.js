@@ -20,6 +20,9 @@ import CheckoutScreen from '../screens/CheckoutScreen';
 import OrderSuccess from '../screens/OrderSuccess';
 import ResetPass from '../screens/ResetPass';
 import OrderDetail from '../screens/OrderDetail';
+import EditUserInfo from '../screens/EditUserInfo';
+import EditSecurity from '../screens/EditSecurity';
+import SearchScreen from '../screens/SearchScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -38,13 +41,16 @@ function AppNavigator() {
                     <Stack.Screen name="ViewAll" component={ViewAllScreen} />
                     <Stack.Screen name="Product" component={ProductScreen} />
                     <Stack.Screen name="Orders" component={OrderScreen} options={{ gestureEnabled: false }} />
-                    <Stack.Screen name="ChatBox" component={ChatBoxScreen} options={{ gestureEnabled: false }} />
+                    <Stack.Screen name="ChatBox" component={ChatBoxScreen} />
                     <Stack.Screen name="Account" component={AccountScreen} options={{ gestureEnabled: false }} />
                     <Stack.Screen name="Cart" component={CartScreen} />
                     <Stack.Screen name="Checkout" component={CheckoutScreen} />
                     <Stack.Screen name="OrderSuccess" component={OrderSuccess} />
                     <Stack.Screen name="ResetPass" component={ResetPass} />
                     <Stack.Screen name="OrderDetail" component={OrderDetail} />
+                    <Stack.Screen name="EditUser" component={EditUserInfo} />
+                    <Stack.Screen name="EditSecurity" component={EditSecurity} />
+                    <Stack.Screen name="Search" component={SearchScreen} />
                 </Stack.Navigator>
             </NavigationContainer>
         </FooterProvider>

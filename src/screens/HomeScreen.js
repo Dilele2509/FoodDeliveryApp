@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { SafeAreaView, FlatList, StyleSheet, View, Text, TouchableOpacity, Image } from "react-native";
-import { Categories, Header, Recommend, SliderShow, TopRatedRes, MenuBar, Footer, CartNoti } from "../components";
+import { Categories, Header, Recommend, SliderShow, TopRatedRes, MenuBar, Footer, CartNoti, SplashScreen } from "../components";
 import GlobalStyles, { primaryColor } from "../../assets/styles/GlobalStyles";
 import axios from "../API/axios";
 import { useFocusEffect } from '@react-navigation/native';
@@ -14,6 +14,7 @@ function HomeScreen({ navigation }) {
     const [hasResult, setHasResult] = useState(false);
     const [searchResult, setSearchResult] = useState([]);
     const [searchData, setSearchData] = useState('');
+    const [isLoading, setIsLoading] = useState(false)
 
 
     const fetchRecentProducts = async (recentList) => {
@@ -29,6 +30,7 @@ function HomeScreen({ navigation }) {
     };
 
     const fetchData = useCallback(() => {
+        setSearchData('')
         axios.get('/product')
             .then((response) => {
                 if (Array.isArray(response.data)) {
@@ -138,44 +140,56 @@ function HomeScreen({ navigation }) {
 
     return (
         <SafeAreaView style={styles.safeArea}>
-            <Header
-                userName={userInfo.full_name}
-                setHasResult={setHasResult}
-                searchResult={searchResult}
-                setSearchResult={setSearchResult}
-                searchData={searchData}
-                setSearchData={setSearchData}
-            />
-            {hasResult && (
-                <FlatList
-                    style={styles.viewSearchBox}
-                    data={searchResult}
-                    contentContainerStyle={{ paddingBottom: 20 }}
-                    renderItem={({ item }) => (
-                        <TouchableOpacity
-                            onPress={() => navigation.navigate("Product", { id: String(item.product_id) })}
-                            key={item.product_id}
-                            style={styles.recentItem}
-                        >
-                            <Image style={styles.recentImg} source={{ uri: item.thumbnail }} />
-                            <View style={[GlobalStyles.pad10, styles.recentContent]}>
-                                <Text style={[GlobalStyles.h5]}>{item.title}</Text>
-                            </View>
-                        </TouchableOpacity>
-                    )}
-                    keyExtractor={item => item.product_id.toString()}
-                />
+            {isLoading && (
+                <SplashScreen isLoading={isLoading} />
             )}
-
-            <FlatList
-                style={[{ marginBottom: 35 }]}
-                data={sections}
-                renderItem={renderItem}
-                keyExtractor={item => item.id}
-                contentContainerStyle={styles.flatList}
-            />
-            {cartCount > 0 && <CartNoti cartCount={cartCount} navigation={navigation} />}
-            <Footer navigation={navigation} />
+            {!isLoading && (<>
+                <Header
+                    setIsLoading={setIsLoading}
+                    navigation={navigation}
+                    userName={userInfo.full_name}
+                    setHasResult={setHasResult}
+                    searchResult={searchResult}
+                    setSearchResult={setSearchResult}
+                    searchData={searchData}
+                    setSearchData={setSearchData}
+                />
+                {hasResult && (
+                    <FlatList
+                        style={styles.viewSearchBox}
+                        data={searchResult}
+                        contentContainerStyle={{ paddingBottom: 20 }}
+                        renderItem={({ item }) => (
+                            <TouchableOpacity
+                                onPress={() => navigation.navigate("Product", { id: String(item.product_id) })}
+                                key={item.product_id}
+                                style={styles.recentItem}
+                            >
+                                <View style={[styles.imgAre]}>
+                                    {item.deleted == 1 ? (<View style={[styles.disPro]}>
+                                        <Text style={[styles.disProText]}>Unavailable</Text>
+                                    </View>) : null}
+                                    <Image style={styles.recentImg} source={{ uri: item.thumbnail }} />
+                                </View>
+                                <View style={[GlobalStyles.pad10, styles.recentContent]}>
+                                    <Text style={[GlobalStyles.h5]}>{item.title}</Text>
+                                </View>
+                            </TouchableOpacity>
+                        )}
+                        keyExtractor={item => item.product_id.toString()}
+                    />
+                )}
+    
+                <FlatList
+                    style={[{ marginBottom: 35 }]}
+                    data={sections}
+                    renderItem={renderItem}
+                    keyExtractor={item => item.id}
+                    contentContainerStyle={[styles.flatList, {paddingBottom: cartCount>0 && 80}]}
+                />
+                {cartCount > 0 && <CartNoti cartCount={cartCount} navigation={navigation} />}
+                <Footer navigation={navigation} />
+            </>)}
         </SafeAreaView>
     );
 }
@@ -187,12 +201,13 @@ const styles = StyleSheet.create({
     },
     flatList: {
         flexGrow: 1,
-        paddingBottom: 20,
+        paddingBottom: 30,
     },
     viewSearchBox: {
         backgroundColor: primaryColor.whitePrimary,
         width: "90%",
-        height: 200,
+        minHeight: 60,
+        maxHeight: 200,
         borderWidth: 1,
         borderColor: primaryColor.blackPrimary,
         borderRadius: 10,
@@ -211,6 +226,26 @@ const styles = StyleSheet.create({
         width: 60,
         height: 60,
         resizeMode: "cover",
+    },
+    imgAre: {
+        width: 60,
+        height: 60,
+    },
+    disPro: {
+        position: "absolute",
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+        zIndex: 9999,
+        backgroundColor: "rgba(0,0,0,.5)",
+        alignItems: "center",
+        justifyContent: "center"
+    },
+    disProText: {
+        fontWeight: "500",
+        color: primaryColor.whitePrimary,
+        fontSize: 10
     },
     recentContent: {
         flex: 1,

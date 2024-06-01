@@ -1,76 +1,43 @@
-import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import React, { useContext, useState } from 'react';
-import GlobalStyles, { primaryColor } from '../../assets/styles/GlobalStyles';
-import { Footer } from '../components';
-import { FooterContext } from '../provider/FooterProvider'; // Import FooterContext
+import { Dimensions, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React from 'react'
+import { Footer } from '../components'
+import ChatScreen from './ChatScreen'
+import GlobalStyles, { primaryColor } from '../../assets/styles/GlobalStyles'
+import { AntDesign } from '@expo/vector-icons'
+
+const { width, height } = Dimensions.get('window');
 
 const ChatBoxScreen = ({ navigation }) => {
-  const [tabHeader, setTabHeader] = useState([
-    {
-      title: "Now",
-      isSelected: true,
-    },
-    {
-      title: "History",
-      isSelected: false,
-    },
-  ]);
-
-  const { handlePress } = useContext(FooterContext); // Get handlePress from FooterContext
-
-  const handleTabPress = (index) => {
-    setTabHeader(tabHeader.map((tab, i) => ({
-      ...tab,
-      isSelected: i === index
-    })));
-  };
-
   return (
-    <SafeAreaView style={[styles.safeArea, { backgroundColor: primaryColor.creamPrimary }]}>
-      <View style={styles.container}>
-        <View style={[GlobalStyles.flexRow, styles.headerContainer]}>
-          {tabHeader.map((tab, index) => (
-            <TouchableOpacity key={index} onPress={() => handleTabPress(index)} style={[styles.headerItem, tab.isSelected && styles.isChoose]}>
-              <Text style={[GlobalStyles.h5, { color: tab.isSelected ? primaryColor.organPrimary : primaryColor.blackPrimary }]}>{tab.title}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-        <View style={styles.contentContainer}>
-          {/*  main content goes here */}
-        </View>
-        <Footer navigation={navigation} />
+    <SafeAreaView style={[GlobalStyles.heighFullScreen,{ backgroundColor: primaryColor.creamPrimary }]}>
+      <View style={[GlobalStyles.padScreen20, styles.headerPage]}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <AntDesign name="arrowleft" size={24} color={primaryColor.organPrimary} />
+        </TouchableOpacity>
+        <Text style={styles.titleText}>Hungry Cat AI</Text>
       </View>
+      <ChatScreen />
     </SafeAreaView>
-  );
-};
+  )
+}
 
-export default ChatBoxScreen;
+export default ChatBoxScreen
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: 'white',
+  headerPage: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    position: "relative",
+    width: width - 40, // adjust according to padding/margin
   },
-  container: {
-    flex: 1,
-  },
-  headerContainer: {
-    width: "100%",
-    justifyContent: 'space-around',
-  },
-  headerItem: {
-    flex: 1,
-    padding: 10,
-    borderStyle: "solid",
-    borderBottomWidth: 1,
-    borderBottomColor: "#eee",
-    alignItems: 'center',
-  },
-  isChoose: {
+  titleText: {
+    fontSize: 24,
+    fontWeight: '500',
     color: primaryColor.organPrimary,
-    borderBottomColor: primaryColor.organPrimary,
+    position: "absolute",
+    width: width,
+    textAlign: "center",
+    zIndex: -999
   },
-  contentContainer: {
-    flex: 1,
-  },
-});
+})

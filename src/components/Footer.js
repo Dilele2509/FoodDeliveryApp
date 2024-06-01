@@ -28,7 +28,7 @@ function Footer({ navigation }) {
                         >
                             <IconComponent 
                                 name={btn.iconBtnName} 
-                                size={32} 
+                                size={26} 
                                 color={btn.isSelected ? primaryColor.organPrimary : primaryColor.brownPrimary} 
                             />
                             <Text style={[styles.titleTaskBar, btn.isSelected && styles.isChoose]}>
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: primaryColor.creamPrimary,
         width: "100%",
-        height: 60,
+        height: 55,
         flexDirection: "row",
         justifyContent: "space-around",
         alignItems: "center",

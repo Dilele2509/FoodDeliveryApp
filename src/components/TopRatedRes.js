@@ -51,7 +51,9 @@ const styles = StyleSheet.create({
     },
     recentContent: {
         backgroundColor: "#F5F7F8",
-        width: 150
+        justifyContent: "space-between",
+        width: 150,
+        height: 100
     },
     discountText: {
         marginTop: 20,
