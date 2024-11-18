@@ -15,6 +15,7 @@ const AccountScreen = ({ navigation }) => {
     axios.get(`/user/id`)
       .then((response) => {
         const userData = response.data.user[0];
+        console.log(userData);
         setUserInfo(userData);
       })
       .catch((error) => {
