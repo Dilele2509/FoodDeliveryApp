@@ -4,7 +4,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import axios from '../API/axios';
 import GlobalStyles, { primaryColor } from '../../assets/styles/GlobalStyles';
 import { AntDesign, Entypo, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
-import { AddressBox, InputBox, SplashScreen } from '../components';
+import { AddressBox, InputBox, MoneyFormat, SplashScreen } from '../components';
 
 const { width } = Dimensions.get('window');
 
@@ -99,7 +99,7 @@ const CheckoutScreen = ({ navigation }) => {
             <View style={styles.itemInfo}>
                 <View style={styles.priceInfo}>
                     <Text style={[GlobalStyles.h5]}>{item.title}</Text>
-                    <Text style={[GlobalStyles.h5, { color: primaryColor.organPrimary }]}>{item.price}</Text>
+                    <Text style={[GlobalStyles.h5, { color: primaryColor.organPrimary }]}><MoneyFormat value={item.price} isShowing={true}/></Text>
                 </View>
                 <View>
                     <Text>x{item.cartQuantity}</Text>
@@ -186,10 +186,10 @@ const CheckoutScreen = ({ navigation }) => {
                                     <Text style={[styles.detailText, GlobalStyles.h5]}>Total: </Text>
                                 </View>
                                 <View>
-                                    <Text style={[styles.detailText, { textAlign: 'right' }]}>{calculateTotalPrice(cartProduct)}</Text>
-                                    <Text style={[styles.detailText, { textAlign: 'right' }]}>16000</Text>
-                                    <Text style={[styles.detailText, { textAlign: 'right' }]}>-16000</Text>
-                                    <Text style={[styles.detailText, GlobalStyles.h5, { color: primaryColor.organPrimary, textAlign: 'right' }]}>{calculateTotalPrice(cartProduct)}</Text>
+                                    <Text style={[styles.detailText, { textAlign: 'right' }]}><MoneyFormat value={calculateTotalPrice(cartProduct)} isShowing={true}/></Text>
+                                    <Text style={[styles.detailText, { textAlign: 'right' }]}><MoneyFormat value={16000} isShowing={true}/></Text>
+                                    <Text style={[styles.detailText, { textAlign: 'right' }]}><MoneyFormat value={-16000} isShowing={true}/></Text>
+                                    <Text style={[styles.detailText, GlobalStyles.h5, { color: primaryColor.organPrimary, textAlign: 'right' }]}><MoneyFormat value={calculateTotalPrice(cartProduct)} isShowing={true}/></Text>
                                 </View>
                             </View>
                         </View>

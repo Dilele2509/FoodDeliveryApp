@@ -25,7 +25,7 @@ function OTPScreen({ navigation, route }) {
           return;
       }
       const response = await axios.post('/login/check-code', { inputCode: OTPValue.join("") },config);
-      console.log(response.data);
+      console.log('OTP check: ',response.data);
       if(response.data.status === 'Error'){
           showToast('error', 'Incorrect Confirm Code')
       }else{

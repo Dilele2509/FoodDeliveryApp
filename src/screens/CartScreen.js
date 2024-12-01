@@ -4,6 +4,7 @@ import GlobalStyles, { primaryColor } from '../../assets/styles/GlobalStyles';
 import { AntDesign } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import axios from '../API/axios';
+import { MoneyFormat } from '../components';
 
 const { width } = Dimensions.get('window');
 
@@ -85,7 +86,7 @@ const CartScreen = ({ navigation }) => {
             <View style={styles.itemInfo}>
                 <View style={styles.priceInfo}>
                     <Text style={GlobalStyles.h5}>{item.title}</Text>
-                    <Text style={[GlobalStyles.h5, { color: primaryColor.organPrimary }]}>{item.price} VND</Text>
+                    <Text style={[GlobalStyles.h5, { color: primaryColor.organPrimary }]}><MoneyFormat value={item.price} isShowing={true}/></Text>
                 </View>
                 <View style={styles.quantityContainer}>
                     <TouchableOpacity style={styles.quantityButton} onPress={() => decrementQuantity(item)}>
@@ -122,7 +123,7 @@ const CartScreen = ({ navigation }) => {
                 <View style={styles.footerContent}>
                     <View style={[{ flexDirection: "row", alignItems: "center" }]}>
                         <Text style={[GlobalStyles.basicText]}>Total Price: </Text>
-                        <Text style={[GlobalStyles.h5, { color: primaryColor.organPrimary }]}>{calculateTotalPrice()} VND</Text>
+                        <Text style={[GlobalStyles.h5, { color: primaryColor.organPrimary }]}><MoneyFormat value={calculateTotalPrice()} isShowing={true}/></Text>
                     </View>
                     <TouchableOpacity onPress={() => navigation.navigate("Checkout")} style={[styles.checkoutBtn]}>
                         <Text style={[GlobalStyles.h5, { color: primaryColor.whitePrimary }]}>Checkout</Text>

@@ -17,6 +17,7 @@ import CartNoti from "./CartNoti"
 import AddCartBox from "./AddCartBox"
 import SplashScreen from "./SplashScreen"
 import AddressBox from "./AddressBox"
+import MoneyFormat from "./MoneyFormat"
 
 
 export {
@@ -38,5 +39,6 @@ export {
     CartNoti,
     AddCartBox,
     AddressBox,
-    SplashScreen
+    SplashScreen,
+    MoneyFormat
 }

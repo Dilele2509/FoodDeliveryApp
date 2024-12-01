@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, Image, Dimensions, TouchableOpacity, FlatList, 
 import GlobalStyles, { primaryColor } from "../../assets/styles/GlobalStyles";
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import axios from "../API/axios";
-import { AddCartBox, CartView, SplashScreen } from "../components";
+import { AddCartBox, CartView, MoneyFormat, SplashScreen } from "../components";
 
 const { width } = Dimensions.get('window');
 
@@ -140,7 +140,7 @@ function ProductScreen({ route, navigation }) {
                             </Text>
                             <View style={styles.desContainer}>
                                 <View>
-                                    <Text style={styles.price}>{productInfo.price} VND</Text>
+                                    <Text style={styles.price}><MoneyFormat value={productInfo.price} isShowing={true}/></Text>
                                 </View>
                                 <View style={styles.addBtn}>
                                     <TouchableOpacity onPress={() => {

@@ -4,7 +4,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import axios, { axiosPrivate } from '../API/axios';
 import GlobalStyles, { primaryColor } from '../../assets/styles/GlobalStyles';
 import { AntDesign, Entypo, FontAwesome5, MaterialCommunityIcons, FontAwesome6, MaterialIcons } from '@expo/vector-icons';
-import { FillButton } from '../components';
+import { FillButton, MoneyFormat } from '../components';
 
 const { width } = Dimensions.get('window');
 
@@ -50,8 +50,8 @@ const CheckoutScreen = ({ navigation, route }) => {
             <View style={styles.itemInfo}>
                 <View style={styles.priceInfo}>
                     <Text style={[GlobalStyles.h5]}>{item.title}</Text>
-                    <Text style={[GlobalStyles.basicText]}>{item.price}</Text>
-                    <Text style={[GlobalStyles.h5, { color: primaryColor.organPrimary }]}>{item.total}</Text>
+                    <Text style={[GlobalStyles.basicText]}><MoneyFormat value={item.price} isShowing={true}/></Text>
+                    <Text style={[GlobalStyles.h5, { color: primaryColor.organPrimary }]}><MoneyFormat value={item.total} isShowing={true}/></Text>
                 </View>
                 <View>
                     <Text>x{item.boughtQuantity}</Text>
@@ -235,10 +235,10 @@ const CheckoutScreen = ({ navigation, route }) => {
                                 <Text style={[styles.detailText, GlobalStyles.h5]}>Total: </Text>
                             </View>
                             <View>
-                                <Text style={[styles.detailText, { textAlign: 'right' }]}>{orderDetailInfo.total}</Text>
-                                <Text style={[styles.detailText, { textAlign: 'right' }]}>16000</Text>
-                                <Text style={[styles.detailText, { textAlign: 'right' }]}>-16000</Text>
-                                <Text style={[styles.detailText, GlobalStyles.h5, { color: primaryColor.organPrimary, textAlign: 'right' }]}>{orderDetailInfo.total}</Text>
+                                <Text style={[styles.detailText, { textAlign: 'right' }]}><MoneyFormat value={orderDetailInfo.total} isShowing={true}/></Text>
+                                <Text style={[styles.detailText, { textAlign: 'right' }]}><MoneyFormat value={1600} isShowing={true}/></Text>
+                                <Text style={[styles.detailText, { textAlign: 'right' }]}><MoneyFormat value={-1600} isShowing={true}/></Text>
+                                <Text style={[styles.detailText, GlobalStyles.h5, { color: primaryColor.organPrimary, textAlign: 'right' }]}><MoneyFormat value={orderDetailInfo.total} isShowing={true}/></Text>
                             </View>
                         </View>
                     </View>
@@ -256,7 +256,7 @@ const CheckoutScreen = ({ navigation, route }) => {
                 <View style={styles.footerContent}>
                     <View style={[{ flexDirection: "row", alignItems: "center" }]}>
                         <Text style={[GlobalStyles.basicText]}>Total Price: </Text>
-                        <Text style={[GlobalStyles.h5, { color: primaryColor.organPrimary }]}>{orderDetailInfo.total} VND</Text>
+                        <Text style={[GlobalStyles.h5, { color: primaryColor.organPrimary }]}><MoneyFormat value={orderDetailInfo.total} isShowing={true}/></Text>
                     </View>
                     <TouchableOpacity style={[styles.checkoutBtn]}>
                         <Text style={[GlobalStyles.h5, { color: primaryColor.whitePrimary }]}>Received</Text>

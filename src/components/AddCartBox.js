@@ -4,6 +4,7 @@ import GlobalStyles, { primaryColor } from '../../assets/styles/GlobalStyles'
 import { AntDesign } from '@expo/vector-icons';
 import FillButton from './FillButton';
 import axios from '../API/axios';
+import MoneyFormat from './MoneyFormat';
 
 const { width } = Dimensions.get('window');
 
@@ -24,7 +25,7 @@ const AddCartBox = (props) => {
                     <View style={styles.itemInfo}>
                         <View style={styles.priceInfo}>
                             <Text style={GlobalStyles.h5}>{item.title}</Text>
-                            <Text style={[GlobalStyles.h5, { color: primaryColor.organPrimary }]}>{item.price} VND</Text>
+                            <Text style={[GlobalStyles.h5, { color: primaryColor.organPrimary }]}><MoneyFormat value={item.price} isShowing={true}/></Text>
                         </View>
                         <View style={styles.quantityContainer}>
                             <TouchableOpacity style={styles.quantityButton} onPress={() => decrementQuantity()}>

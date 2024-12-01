@@ -3,7 +3,7 @@ import React, { useState, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import axios from '../API/axios';
 import GlobalStyles, { primaryColor } from '../../assets/styles/GlobalStyles';
-import { Footer } from '../components';
+import { Footer, MoneyFormat } from '../components';
 import { MaterialCommunityIcons, Entypo } from '@expo/vector-icons';
 
 const OrderScreen = (props) => {
@@ -68,7 +68,7 @@ const OrderScreen = (props) => {
         <TouchableOpacity onPress={()=>navigation.navigate("OrderDetail", {order_id: item.order_id})} key={item.order_id} style={styles.orderItem}>
           <Text>{item.order_id}</Text>
           <Text style={{ color: statusColor }}>{statusLabel}</Text>
-          <Text>{item.total}</Text>
+          <Text><MoneyFormat value={item.total} isShowing={true}/></Text>
         </TouchableOpacity>
       </View>
     );
